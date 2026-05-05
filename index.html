@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>AI Hub</title>
+</head>
+
+<body style="margin:0;font-family:sans-serif;">
+  <div style="padding:10px;border-bottom:1px solid #ccc;">
+    <b>AI Hub</b>
+    <button onclick="copyPrompt()">Copy</button>
+  </div>
+
+  <div style="display:flex;height:90vh;">
+
+```
+<!-- Left -->
+<div style="width:250px;border-right:1px solid #ccc;padding:10px;">
+  <h3>Subject</h3>
+  <textarea id="subject"></textarea>
+
+  <h3>Style</h3>
+  <select id="style">
+    <option value="modern commercial illustration">商業插畫</option>
+    <option value="flat illustration">扁平</option>
+  </select>
+</div>
+
+<!-- Center -->
+<div style="flex:1;padding:20px;">
+  <h2>Canvas</h2>
+  <p>這裡未來可以加功能</p>
+</div>
+
+<!-- Right -->
+<div style="width:300px;border-left:1px solid #ccc;padding:10px;">
+  <h3>Prompt</h3>
+  <pre id="output"></pre>
+</div>
+```
+
+  </div>
+
+<script>
+function generate() {
+  const subject = document.getElementById("subject").value;
+  const style = document.getElementById("style").value;
+
+  const prompt = subject + ", financial campaign, " + style;
+  document.getElementById("output").innerText = prompt;
+}
+
+document.querySelectorAll("textarea, select").forEach(el => {
+  el.addEventListener("input", generate);
+});
+
+function copyPrompt() {
+  navigator.clipboard.writeText(document.getElementById("output").innerText);
+}
+
+generate();
+</script>
+
+</body>
+</html>
