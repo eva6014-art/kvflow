@@ -482,15 +482,22 @@ const STATE = {
         'minimalist product photography, clean white studio background, professional lighting',
         'luxury brand campaign photography, editorial fashion',
         'cinematic film still, anamorphic lens, movie-quality render, 35mm film grain',
+        'Japanese anime illustration style, vibrant colors, clean linework',
+        'Japanese shoujo manga style, delicate linework, soft pastel tones, sparkle effects',
+        'Japanese shounen manga style, bold linework, dynamic action composition',
+        'black and white shoujo manga, ink illustration, screen tone texture',
+        'black and white shounen manga, high contrast ink, speed lines',
         'flat vector illustration, clean geometric shapes, bold colors, no gradients',
+        'Japanese flat poster art style, retro travel poster aesthetic, limited color palette',
+        'flat infographic illustration, isometric icons, modern data visualization style',
         'editorial illustration, magazine style, conceptual art, sophisticated composition',
+        'flat vector logo design, minimalist icon, clean brand identity',
         '3D render, glossy materials, depth of field, octane render, studio lighting',
         '3D clay icon style, soft matte texture, pastel colors, cute chibi proportions',
-        'watercolor painting, soft washes, bleeding edges, delicate brushwork, paper texture',
-        'Japanese anime illustration style, vibrant colors, clean linework',
-        'Japanese flat poster art style, retro travel poster aesthetic, limited color palette',
-        'pop art style, bold outlines, Ben-Day dots, high saturation, Andy Warhol inspired',
         'cyberpunk aesthetic, neon lights, rain-soaked streets, dystopian city, high contrast',
+        'watercolor painting, soft washes, bleeding edges, delicate brushwork, paper texture',
+        'oil painting, thick impasto brushstrokes, rich pigment, canvas texture, classical style',
+        'pop art style, bold outlines, Ben-Day dots, high saturation, Andy Warhol inspired',
       ], activeVariant: 0
     },
     {
@@ -613,8 +620,10 @@ const VARIANT_LABELS = {
   layout:  ['三分法構圖', '置中對稱', '左視覺右文案', '右視覺左文案', '斜角動感', '商品特寫'],
   style:   [
     '寫實攝影', '極簡產品棚拍', '奢品廣告攝影', '電影質感',
-    '扁平化插畫', '雜誌編輯插畫', '3D 渲染', '3D 黏土圖示',
-    '水彩畫', '動漫風格', '日系扁平海報', '普普藝術', '賽博龐克',
+    '動漫風格', '日本少女漫畫', '日本少年漫畫', '黑白少女漫畫', '黑白少年漫畫',
+    '扁平化插畫', '日系扁平海報', '扁平資訊圖表', '雜誌編輯插畫', '扁平商標設計',
+    '3D 渲染', '3D 黏土圖示', '賽博龐克',
+    '水彩畫', '油畫', '普普藝術',
   ],
   lighting: [
     '戲劇電影光', '自然光', '霓虹燈光', '黃金時刻',
@@ -653,7 +662,7 @@ const STRATEGIC_VARIANTS = [
     name: '品牌版', tag: 'BRAND', color: '#059669', tagBg: '#d1fae5', tagText: '#065f46',
     desc: '極簡品牌感、留白、高級',
     overrides: {
-      style: 'editorial photography, minimal, clean premium look',
+      style: 'editorial illustration, magazine style, conceptual art, sophisticated composition',
       lighting: 'soft even studio lighting, airy and bright',
       color: 'cream white and charcoal, editorial brand palette',
     }
@@ -1075,7 +1084,13 @@ function applyVariant(idx) {
   if (!v) return;
   Object.entries(v.overrides).forEach(([k, val]) => {
     const b = STATE.blocks.find(b => b.id === k);
-    if (b) { b.value = val; b.enabled = true; }
+    if (b) {
+      b.value = val;
+      b.enabled = true;
+      // 同步 activeVariant：找到 variants 陣列中對應的 index
+      const vi = b.variants.findIndex(vv => vv === val);
+      b.activeVariant = vi >= 0 ? vi : -1;
+    }
   });
   render();
   showToast('✓ 已套用：' + v.name);
