@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Design Workbench</title>
+<title>AI 設計工作台</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════════════ RESET & BASE */
@@ -384,18 +384,18 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); font
 <div class="app" id="app">
   <!-- TOP BAR -->
   <div class="topbar">
-    <div class="topbar-brand">Workbench</div>
+    <div class="topbar-brand">設計工作台</div>
     <div class="topbar-divider"></div>
-    <input class="project-name-input" id="project-name" placeholder="Untitled Project" value="金融 KV Banner">
+    <input class="project-name-input" id="project-name" placeholder="未命名專案" value="金融 KV Banner">
     <div class="topbar-divider"></div>
     <div class="topbar-prompt-wrap">
-      <span class="topbar-prompt-label">PROMPT</span>
-      <span class="topbar-prompt-preview" id="topbar-prompt-preview">尚未組合 prompt...</span>
+      <span class="topbar-prompt-label">咒語</span>
+      <span class="topbar-prompt-preview" id="topbar-prompt-preview">尚未組合 Prompt...</span>
     </div>
     <div class="topbar-actions">
-      <button class="btn btn-ghost btn-sm" onclick="doVariants()">⚡ Variants <kbd style="font-family:var(--mono);font-size:9px;opacity:.5">V</kbd></button>
-      <button class="btn btn-sm" onclick="saveSnapshot()">↓ Save <kbd style="font-family:var(--mono);font-size:9px;opacity:.5">S</kbd></button>
-      <button class="btn btn-primary btn-sm" onclick="copyPrompt()">Copy <kbd style="font-family:var(--mono);font-size:9px;opacity:.7">C</kbd></button>
+      <button class="btn btn-ghost btn-sm" onclick="doVariants()">⚡ 產生變體 <kbd style="font-family:var(--mono);font-size:9px;opacity:.5">V</kbd></button>
+      <button class="btn btn-sm" onclick="saveSnapshot()">↓ 儲存 <kbd style="font-family:var(--mono);font-size:9px;opacity:.5">S</kbd></button>
+      <button class="btn btn-primary btn-sm" onclick="copyPrompt()">複製 <kbd style="font-family:var(--mono);font-size:9px;opacity:.7">C</kbd></button>
     </div>
   </div>
 
@@ -405,8 +405,8 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); font
     <!-- LEFT PANEL -->
     <div class="left-panel">
       <div class="panel-header">
-        <span class="panel-title">Workflow</span>
-        <button class="btn btn-ghost btn-sm btn-icon" id="left-mode-btn" onclick="toggleLeftMode()" title="切換模式">⊞</button>
+        <span class="panel-title">工作步驟</span>
+        <button class="btn btn-ghost btn-sm btn-icon" id="left-mode-btn" onclick="toggleLeftMode()" title="切換：步驟 / 模板">⊞</button>
       </div>
       <div class="left-scroll" id="left-panel-body"></div>
     </div>
@@ -414,9 +414,9 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); font
     <!-- CENTER PANEL -->
     <div class="center-panel">
       <div class="center-toolbar">
-        <span class="panel-title" style="flex:1;" id="center-toolbar-title">Canvas</span>
-        <button class="btn btn-ghost btn-sm" onclick="addCustomBlock()">+ Block</button>
-        <button class="btn btn-ghost btn-sm" onclick="clearAllBlocks()">Clear</button>
+        <span class="panel-title" style="flex:1;" id="center-toolbar-title">編輯畫布</span>
+        <button class="btn btn-ghost btn-sm" onclick="addCustomBlock()">+ 新增區塊</button>
+        <button class="btn btn-ghost btn-sm" onclick="clearAllBlocks()">清除</button>
       </div>
       <div class="center-scroll" id="canvas-area"></div>
     </div>
@@ -424,10 +424,10 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); font
     <!-- RIGHT PANEL -->
     <div class="right-panel">
       <div class="right-tabs" id="right-tabs">
-        <div class="right-tab active" data-tab="preview" onclick="switchRightTab('preview')">Preview</div>
-        <div class="right-tab" data-tab="score" onclick="switchRightTab('score')">Score</div>
-        <div class="right-tab" data-tab="variants" onclick="switchRightTab('variants')">Variants</div>
-        <div class="right-tab" data-tab="history" onclick="switchRightTab('history')">History</div>
+        <div class="right-tab active" data-tab="preview" onclick="switchRightTab('preview')">預覽</div>
+        <div class="right-tab" data-tab="score" onclick="switchRightTab('score')">評分</div>
+        <div class="right-tab" data-tab="variants" onclick="switchRightTab('variants')">變體</div>
+        <div class="right-tab" data-tab="history" onclick="switchRightTab('history')">歷史</div>
       </div>
       <div class="right-content" id="right-content"></div>
     </div>
@@ -449,25 +449,26 @@ const STATE = {
   activeVariantIdx: null,
   snapshots: JSON.parse(localStorage.getItem('wb_snapshots') || '[]'),
   generatedVariants: [],
+  _lastTranslation: '',
   blocks: [
-    { id: 'subject',  label: 'Subject',  enabled: true, value: 'happy couple, travelers, airport departure hall', variants: ['couple with luggage, excited', 'business professional, confident', 'family vacation, joyful'], activeVariant: 0 },
-    { id: 'layout',   label: 'Layout',   enabled: true, value: 'left-heavy composition, right side reserved for text overlay, space for typography', variants: ['centered composition, symmetrical', 'rule of thirds, dynamic diagonal', 'full-bleed, edge-to-edge'], activeVariant: 0 },
-    { id: 'style',    label: 'Style',    enabled: true, value: '3D render, cartoon style, smooth shading, volumetric', variants: ['photorealistic, hyperdetailed', 'flat design, minimal illustration', 'editorial photography, clean'], activeVariant: 0 },
-    { id: 'lighting', label: 'Lighting', enabled: true, value: 'soft diffused sunlight, natural outdoor illumination, warm atmosphere', variants: ['golden hour, warm backlight glow', 'studio lighting, clean bright', 'dramatic cinematic, deep contrast'], activeVariant: 0 },
-    { id: 'color',    label: 'Color',    enabled: true, value: 'vibrant coral and white, energetic lifestyle palette, fresh tropical feel', variants: ['deep navy and gold, premium financial', 'soft cream and sage, organic modern', 'black and white with red accent'], activeVariant: 0 },
-    { id: 'quality',  label: 'Quality',  enabled: true, value: 'masterpiece, best quality, highly detailed, 8K resolution', variants: ['ultra high res, sharp focus', 'cinematic film still, 35mm grain', 'professional stock photo quality'], activeVariant: 0 },
+    { id: 'subject',  label: '主體',  enabled: true, value: 'happy couple, travelers, airport departure hall', variants: ['couple with luggage, excited', 'business professional, confident', 'family vacation, joyful'], activeVariant: 0 },
+    { id: 'layout',   label: '構圖',   enabled: true, value: 'left-heavy composition, right side reserved for text overlay, space for typography', variants: ['centered composition, symmetrical', 'rule of thirds, dynamic diagonal', 'full-bleed, edge-to-edge'], activeVariant: 0 },
+    { id: 'style',    label: '風格',    enabled: true, value: '3D render, cartoon style, smooth shading, volumetric', variants: ['photorealistic, hyperdetailed', 'flat design, minimal illustration', 'editorial photography, clean'], activeVariant: 0 },
+    { id: 'lighting', label: '光影', enabled: true, value: 'soft diffused sunlight, natural outdoor illumination, warm atmosphere', variants: ['golden hour, warm backlight glow', 'studio lighting, clean bright', 'dramatic cinematic, deep contrast'], activeVariant: 0 },
+    { id: 'color',    label: '色彩',    enabled: true, value: 'vibrant coral and white, energetic lifestyle palette, fresh tropical feel', variants: ['deep navy and gold, premium financial', 'soft cream and sage, organic modern', 'black and white with red accent'], activeVariant: 0 },
+    { id: 'quality',  label: '品質詞',  enabled: true, value: 'masterpiece, best quality, highly detailed, 8K resolution', variants: ['ultra high res, sharp focus', 'cinematic film still, 35mm grain', 'professional stock photo quality'], activeVariant: 0 },
   ],
 };
 
 // Step definitions (for left panel nav)
 const STEPS = [
-  { id: 'template', label: 'Template',  icon: '▣' },
-  { id: 'subject',  label: 'Subject',   icon: '◉' },
-  { id: 'layout',   label: 'Layout',    icon: '▤' },
-  { id: 'style',    label: 'Style',     icon: '◈' },
-  { id: 'lighting', label: 'Lighting',  icon: '◐' },
-  { id: 'color',    label: 'Color',     icon: '◑' },
-  { id: 'usage',    label: 'Usage Mode',icon: '⊡' },
+  { id: 'template', label: '模板',  icon: '▣' },
+  { id: 'subject',  label: '主體描述',   icon: '◉' },
+  { id: 'layout',   label: '構圖版式',    icon: '▤' },
+  { id: 'style',    label: '插畫風格',     icon: '◈' },
+  { id: 'lighting', label: '光影設定',  icon: '◐' },
+  { id: 'color',    label: '色彩方向',     icon: '◑' },
+  { id: 'usage',    label: '用途模式',icon: '⊡' },
 ];
 
 const TEMPLATES = [
@@ -514,10 +515,10 @@ const TEMPLATES = [
 ];
 
 const USAGES = [
-  { id: 'banner',  name: 'Banner',     size: '1920×600', icon: '▬', suffix: '--ar 16:9' },
-  { id: 'social',  name: 'Social Post',size: '1080×1080',icon: '◻', suffix: '--ar 1:1' },
-  { id: 'story',   name: 'Story',      size: '1080×1920',icon: '▮', suffix: '--ar 9:16' },
-  { id: 'appui',   name: 'App UI',     size: '375×812',  icon: '▯', suffix: '--ar 9:19.5' },
+  { id: 'banner',  name: 'Banner 橫幅',     size: '1920×600', icon: '▬', suffix: '--ar 16:9' },
+  { id: 'social',  name: '社群貼文',size: '1080×1080',icon: '◻', suffix: '--ar 1:1' },
+  { id: 'story',   name: '限時動態',      size: '1080×1920',icon: '▮', suffix: '--ar 9:16' },
+  { id: 'appui',   name: 'App 介面',     size: '375×812',  icon: '▯', suffix: '--ar 9:19.5' },
 ];
 
 const STRATEGIC_VARIANTS = [
@@ -634,7 +635,7 @@ function renderLeft() {
         </div>`;
     }).join('')}
     <div style="padding:12px 16px 8px; margin-top:8px; border-top:1px solid var(--border);">
-      <div class="panel-title" style="margin-bottom:8px;">Usage Mode</div>
+      <div class="panel-title" style="margin-bottom:8px;">用途模式</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;">
         ${USAGES.map(u => `
           <div class="usage-card ${STATE.usageMode === u.id ? 'selected' : ''}" onclick="setUsage('${u.id}')">
@@ -707,14 +708,14 @@ function renderCanvas() {
           </div>
           <div class="step-editor-body">
             <div class="field-group">
-              <label class="field-label">Prompt 內容</label>
+              <label class="field-label">Prompt 內容（英文）</label>
               <textarea class="input-field" rows="3"
                 onchange="updateBlockValue('${block.id}', this.value)"
                 oninput="updateBlockValue('${block.id}', this.value)"
               >${block.value}</textarea>
             </div>
             <div class="field-group">
-              <label class="field-label">快速變體（點選套用）</label>
+              <label class="field-label">快速變體 — 點選套用</label>
               <div class="chip-row">
                 ${block.variants.map((v, i) => `
                   <div class="chip ${block.activeVariant === i ? 'selected' : ''}"
@@ -740,7 +741,7 @@ function renderCanvas() {
       <div class="block-head">
         <span class="drag-handle" title="拖曳排序">⠿</span>
         <span class="block-label">${b.label}</span>
-        <span class="block-type">${b.id}</span>
+        <span class="block-type">${BLOCK_ZH[b.id]||b.id}</span>
         <div class="toggle ${b.enabled ? 'on' : ''}" onclick="toggleBlock('${b.id}')" style="margin-left:auto;"></div>
       </div>
       <div class="block-body">
@@ -756,7 +757,7 @@ function renderCanvas() {
 
   area.innerHTML = editorHtml + `
     <div style="font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;">
-      Canvas — 拖曳排序 · 切換開關 · 點選 Variant
+      拖曳排序 · 點擊開關 · 選擇變體
     </div>
     ${blocksHtml}
     <div style="height:32px;"></div>`;
@@ -773,20 +774,37 @@ function renderRight() {
   if (tab === 'preview') {
     el.innerHTML = `
       <div class="right-section">
-        <div class="right-section-title">Prompt Preview</div>
+        <div class="right-section-title">Prompt 預覽（英文）</div>
         <div class="prompt-preview ${prompt ? '' : 'empty'}">${prompt || '尚未填入任何 Block 內容...'}</div>
-        <div class="char-count">${prompt.length} chars · ${prompt.split(',').filter(Boolean).length} segments</div>
+        <div class="char-count">${prompt.length} 字元 · ${prompt.split(',').filter(Boolean).length} 段落</div>
         <div style="margin-top:10px;display:flex;gap:6px;">
-          <button class="btn btn-primary btn-sm" style="flex:1;" onclick="copyPrompt()">Copy Prompt</button>
-          <button class="btn btn-sm" onclick="saveSnapshot()">Save</button>
+          <button class="btn btn-primary btn-sm" style="flex:1;" onclick="copyPrompt()">複製 Prompt</button>
+          <button class="btn btn-sm" onclick="copyPrompt(true)" title="複製英文 Prompt ＋ 中文翻譯對照" style="white-space:nowrap;">含中文對照</button>
+          <button class="btn btn-sm" onclick="saveSnapshot()">儲存快照</button>
+        </div>
+      </div>
+      <div class="right-section" id="zh-translation-section">
+        <div class="right-section-title" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+          <span>中文對照翻譯</span>
+          <div style="display:flex;gap:5px;align-items:center;">
+            ${localStorage.getItem('gemini_api_key') ? '' : '<span style="font-size:10px;color:var(--amber);font-family:var(--mono);">需要 API Key</span>'}
+            <button class="btn btn-ghost btn-sm" id="translate-btn" onclick="translatePrompt()" style="font-size:10px;padding:3px 8px;"
+              ${localStorage.getItem('gemini_api_key') ? '' : 'disabled title="請先在 Hub 頁面設定 Gemini API Key"'}>翻譯</button>
+          </div>
+        </div>
+        <div style="font-size:10px;color:var(--text3);margin-bottom:8px;line-height:1.5;">
+          逐段英中對照，保留技術參數說明
+        </div>
+        <div id="zh-preview" class="prompt-preview empty" style="min-height:70px;font-family:var(--sans);line-height:1.7;">
+          ${localStorage.getItem('gemini_api_key') ? '點擊「翻譯」產生逐段中文對照' : '⚠ 請先在 Hub 頁面全域設定中填入 Gemini API Key，再回此頁使用翻譯功能'}
         </div>
       </div>
       <div class="right-section">
-        <div class="right-section-title">Keyboard Shortcuts</div>
+        <div class="right-section-title">快捷鍵</div>
         <div class="kbd-hint">
-          <span class="kbd">C</span><span class="kbd-label">Copy</span>
-          <span class="kbd">V</span><span class="kbd-label">Variants</span>
-          <span class="kbd">S</span><span class="kbd-label">Save</span>
+          <span class="kbd">C</span><span class="kbd-label">複製</span>
+          <span class="kbd">V</span><span class="kbd-label">產生變體</span>
+          <span class="kbd">S</span><span class="kbd-label">儲存</span>
         </div>
       </div>`;
   } else if (tab === 'score') {
@@ -797,9 +815,10 @@ function renderRight() {
     };
     el.innerHTML = `
       <div class="right-section">
-        <div class="right-section-title">Prompt Score</div>
+        <div class="right-section-title">Prompt 評分</div>
         <div style="margin-bottom:12px;">
           <div style="font-size:28px;font-weight:600;font-family:var(--mono);">${scores._total}<span style="font-size:14px;color:var(--text3);">/100</span></div>
+          <div style="font-size:11px;color:var(--text3);margin-top:2px;">整體評分</div>
           <div class="score-bar" style="margin-top:6px;">
             <div class="score-fill" style="width:${scores._total}%;background:${scores._total>=70?'var(--green)':scores._total>=40?'var(--amber)':'var(--red)'};"></div>
           </div>
@@ -809,7 +828,7 @@ function renderRight() {
             <div class="score-row">
               <span class="score-label">${label}</span>
               <span class="score-badge score-${scores[k] || 'na'}">${
-                scores[k] === 'good' ? 'GOOD' : scores[k] === 'warn' ? 'WARN' : scores[k] === 'bad' ? 'LOW' : '—'
+                scores[k] === 'good' ? '優' : scores[k] === 'warn' ? '注意' : scores[k] === 'bad' ? '低' : '—'
               }</span>
             </div>`).join('')}
         </div>
@@ -822,7 +841,7 @@ function renderRight() {
       </div>`;
   } else if (tab === 'variants') {
     const variantsHtml = STATE.generatedVariants.length === 0 ? `
-      <div class="empty-state">按下 ⚡ Variants<br>產出 3 種策略版本</div>` :
+      <div class="empty-state">按下「產生變體」<br>產出 3 種策略版本</div>` :
       STATE.generatedVariants.map((v, i) => `
         <div class="variant-card ${STATE.activeVariantIdx === i ? 'active-variant' : ''}" onclick="applyVariant(${i})">
           <div class="variant-card-head">
@@ -834,15 +853,15 @@ function renderRight() {
         </div>`).join('');
     el.innerHTML = `
       <div class="right-section">
-        <div class="right-section-title">Strategic Variants</div>
-        <button class="btn btn-sm" style="width:100%;margin-bottom:12px;" onclick="doVariants()">⚡ Generate Variants</button>
+        <div class="right-section-title">策略變體</div>
+        <button class="btn btn-sm" style="width:100%;margin-bottom:12px;" onclick="doVariants()">⚡ 產生策略變體</button>
         ${variantsHtml}
       </div>`;
   } else if (tab === 'history') {
     const snaps = STATE.snapshots;
     el.innerHTML = `
       <div class="right-section">
-        <div class="right-section-title">Snapshots（${snaps.length}）</div>
+        <div class="right-section-title">快照紀錄（${snaps.length}）</div>
         ${snaps.length === 0 ? '<div class="empty-state">尚無快照<br>按 S 儲存目前版本</div>' :
           snaps.map((s, i) => `
             <div class="snapshot-item">
@@ -950,14 +969,83 @@ function applyVariant(idx) {
     if (b) { b.value = val; b.enabled = true; }
   });
   render();
-  showToast('✓ 套用：' + v.name);
+  showToast('✓ 已套用：' + v.name);
 }
 
-function copyPrompt() {
+
+// ═══════════════════════════════════════════════════════════════
+// TRANSLATE PROMPT (Gemini)
+// ═══════════════════════════════════════════════════════════════
+async function translatePrompt() {
   const p = getPrompt();
   if (!p) { showToast('Prompt 是空的'); return; }
-  navigator.clipboard.writeText(p).then(() => showToast('✓ Copied!'));
-  // also update hub clipboard
+  const apiKey = localStorage.getItem('gemini_api_key');
+  if (!apiKey) { showToast('⚠ 請先在 Hub 頁面設定 Gemini API Key'); return; }
+
+  const btn = document.getElementById('translate-btn');
+  const preview = document.getElementById('zh-preview');
+  if (!btn || !preview) return;
+
+  btn.textContent = '翻譯中...';
+  btn.disabled = true;
+  preview.classList.add('empty');
+  preview.textContent = '翻譯中，請稍候...';
+
+  try {
+    const sysPrompt = `你是 AI 繪圖提示詞的中文對照解說員。
+請將以下英文 Prompt 翻譯成自然流暢的繁體中文對照表。
+規則：
+1. 每個逗號分隔的片段獨立對照一行
+2. 格式為：英文片段 → 中文說明
+3. 技術參數（--ar 16:9、--v 6.1 等）保留不翻譯，說明其用途
+4. 只輸出對照表，不要任何前言或多餘說明`;
+
+    const res = await fetch(
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + apiKey,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contents: [{ parts: [{ text: sysPrompt + '\n\n' + p }] }] })
+      }
+    );
+    const json = await res.json();
+    const result = json?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+    if (result) {
+      // 將每行轉為對照格式 HTML
+      const lines = result.split('\n').filter(l => l.trim());
+      const html = lines.map(line => {
+        const parts = line.split('→');
+        if (parts.length === 2) {
+          return `<div style="display:flex;gap:8px;margin-bottom:6px;line-height:1.5;">
+            <span style="color:var(--text3);flex:1;font-size:10px;">${esc(parts[0].trim())}</span>
+            <span style="color:var(--blue);flex-shrink:0;font-size:11px;opacity:.5;">→</span>
+            <span style="flex:1;color:var(--text);font-size:11px;font-family:var(--sans);">${esc(parts[1].trim())}</span>
+          </div>`;
+        }
+        return `<div style="margin-bottom:5px;color:var(--text2);font-size:11px;">${esc(line)}</div>`;
+      }).join('');
+      preview.innerHTML = html;
+      preview.classList.remove('empty');
+      STATE._lastTranslation = result;
+      // 自動展示翻譯結果提示
+      showToast('✓ 翻譯完成');
+    } else {
+      preview.textContent = '翻譯失敗，請檢查 API Key';
+    }
+  } catch(e) {
+    preview.textContent = '翻譯失敗：' + e.message;
+  } finally {
+    btn.textContent = '重新翻譯';
+    btn.disabled = false;
+  }
+}
+
+function copyPrompt(withZh = false) {
+  const p = getPrompt();
+  if (!p) { showToast('Prompt 是空的'); return; }
+  const zh = STATE._lastTranslation;
+  const text = (withZh && zh) ? p + '\n\n【中文對照】\n' + zh : p;
+  navigator.clipboard.writeText(text).then(() => showToast(withZh && zh ? '✓ 已複製（含中文）' : '✓ 已複製！'));
   localStorage.setItem('hub_prompt', JSON.stringify({ text: p, source: 'workbench', time: Date.now() }));
 }
 
@@ -974,7 +1062,7 @@ function saveSnapshot() {
   if (STATE.snapshots.length > 20) STATE.snapshots.pop();
   localStorage.setItem('wb_snapshots', JSON.stringify(STATE.snapshots));
   if (STATE.rightTab === 'history') renderRight();
-  showToast('✓ Snapshot saved');
+  showToast('✓ 快照已儲存');
 }
 
 function loadSnapshot(idx) {
@@ -982,7 +1070,7 @@ function loadSnapshot(idx) {
   if (!s) return;
   STATE.blocks = JSON.parse(JSON.stringify(s.blocks));
   render();
-  showToast('✓ 已載入 Snapshot');
+  showToast('✓ 已載入快照');
 }
 
 function deleteSnapshot(idx) {
@@ -999,7 +1087,7 @@ function clearSnapshots() {
 }
 
 function addCustomBlock() {
-  const label = prompt('Block 名稱（英文）：');
+  const label = prompt('新增 Block 名稱：');
   if (!label) return;
   const val = prompt('預設 Prompt 內容：') || '';
   STATE.blocks.push({
@@ -1094,6 +1182,12 @@ function showToast(msg) {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => el.classList.remove('show'), 2000);
 }
+
+
+const BLOCK_ZH = {
+  subject: '主體', layout: '構圖', style: '風格',
+  lighting: '光影', color: '色彩', quality: '品質詞',
+};
 
 // ═══════════════════════════════════════════════════════════════
 // INIT
