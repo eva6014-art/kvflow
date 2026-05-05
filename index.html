@@ -1,75 +1,1104 @@
 <!DOCTYPE html>
-
-<html>
+<html lang="zh-TW">
 <head>
-  <meta charset="UTF-8">
-  <title>AI Hub</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Design Workbench</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════ RESET & BASE */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --w-left: 240px;
+  --w-right: 320px;
+  --bg: #f7f6f4;
+  --surface: #ffffff;
+  --surface2: #f2f1ef;
+  --border: #e5e3df;
+  --border2: #d0cdc8;
+  --text: #1a1916;
+  --text2: #6b6760;
+  --text3: #a09d99;
+  --accent: #1a1916;
+  --accent-soft: #f0ede8;
+  --green: #16a34a;
+  --green-bg: #f0fdf4;
+  --amber: #d97706;
+  --amber-bg: #fffbeb;
+  --red: #dc2626;
+  --red-bg: #fef2f2;
+  --blue: #2563eb;
+  --blue-bg: #eff6ff;
+  --mono: 'DM Mono', monospace;
+  --sans: 'DM Sans', sans-serif;
+  --r: 8px;
+  --r-sm: 5px;
+  --shadow: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.08);
+}
+
+html, body { height: 100%; overflow: hidden; }
+body { font-family: var(--sans); background: var(--bg); color: var(--text); font-size: 13px; line-height: 1.5; }
+
+/* ═══════════════════════════════════════════════ LAYOUT */
+.app { display: flex; flex-direction: column; height: 100vh; }
+
+/* Top Bar */
+.topbar {
+  height: 52px; background: var(--surface); border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 12px; padding: 0 16px;
+  flex-shrink: 0; z-index: 100;
+}
+.topbar-brand {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .12em;
+  color: var(--text3); text-transform: uppercase; white-space: nowrap; margin-right: 4px;
+}
+.topbar-divider { width: 1px; height: 20px; background: var(--border); flex-shrink: 0; }
+.project-name-input {
+  font-family: var(--sans); font-size: 13px; font-weight: 500; color: var(--text);
+  border: none; outline: none; background: transparent; min-width: 120px; max-width: 200px;
+}
+.project-name-input::placeholder { color: var(--text3); font-weight: 400; }
+.topbar-prompt-wrap {
+  flex: 1; display: flex; align-items: center;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--r-sm); padding: 0 10px; min-width: 0; gap: 8px;
+}
+.topbar-prompt-label { font-family: var(--mono); font-size: 10px; color: var(--text3); white-space: nowrap; }
+.topbar-prompt-preview {
+  font-family: var(--mono); font-size: 11px; color: var(--text2);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1;
+}
+.topbar-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+/* Buttons */
+.btn {
+  font-family: var(--sans); font-size: 12px; font-weight: 500;
+  padding: 6px 12px; border-radius: var(--r-sm); border: 1px solid var(--border2);
+  background: var(--surface); color: var(--text2); cursor: pointer; transition: all .15s;
+  display: inline-flex; align-items: center; gap: 5px; white-space: nowrap;
+}
+.btn:hover { border-color: var(--text); color: var(--text); }
+.btn-primary {
+  background: var(--text); color: #fff; border-color: var(--text);
+}
+.btn-primary:hover { background: #333; border-color: #333; color: #fff; }
+.btn-ghost { border-color: transparent; background: transparent; }
+.btn-ghost:hover { background: var(--surface2); border-color: var(--border); }
+.btn-sm { padding: 4px 9px; font-size: 11px; }
+.btn-icon { padding: 6px; border-radius: var(--r-sm); }
+
+/* Main content */
+.main { display: flex; flex: 1; overflow: hidden; }
+
+/* ═══════════════════════════════════════════════ LEFT PANEL */
+.left-panel {
+  width: var(--w-left); border-right: 1px solid var(--border);
+  background: var(--surface); display: flex; flex-direction: column;
+  overflow: hidden; flex-shrink: 0;
+}
+.panel-header {
+  padding: 14px 16px 10px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.panel-title {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .12em;
+  color: var(--text3); text-transform: uppercase;
+}
+.left-scroll { overflow-y: auto; flex: 1; padding: 8px 0; }
+.left-scroll::-webkit-scrollbar { width: 3px; }
+.left-scroll::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+/* Step items in left panel */
+.step-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 16px; cursor: pointer; transition: background .12s;
+  border-left: 2px solid transparent;
+}
+.step-item:hover { background: var(--surface2); }
+.step-item.active { background: var(--accent-soft); border-left-color: var(--accent); }
+.step-num {
+  font-family: var(--mono); font-size: 10px; color: var(--text3);
+  width: 16px; flex-shrink: 0;
+}
+.step-label { font-size: 12px; font-weight: 500; flex: 1; }
+.step-status { width: 6px; height: 6px; border-radius: 50%; background: var(--border2); flex-shrink: 0; }
+.step-status.filled { background: var(--green); }
+
+/* Template cards in left panel */
+.template-section { padding: 8px; }
+.template-card {
+  border: 1px solid var(--border); border-radius: var(--r); padding: 10px 12px;
+  margin-bottom: 6px; cursor: pointer; transition: all .15s; background: var(--surface);
+}
+.template-card:hover { border-color: var(--border2); background: var(--surface2); }
+.template-card.selected { border-color: var(--accent); background: var(--accent-soft); }
+.template-card-name { font-size: 12px; font-weight: 500; margin-bottom: 2px; }
+.template-card-desc { font-size: 11px; color: var(--text3); line-height: 1.4; }
+
+/* Usage mode badges */
+.usage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 8px; }
+.usage-card {
+  border: 1px solid var(--border); border-radius: var(--r); padding: 9px 10px;
+  cursor: pointer; transition: all .15s; text-align: center;
+}
+.usage-card:hover { border-color: var(--border2); }
+.usage-card.selected { border-color: var(--accent); background: var(--accent-soft); }
+.usage-card-icon { font-size: 16px; margin-bottom: 3px; }
+.usage-card-name { font-size: 11px; font-weight: 500; }
+.usage-card-size { font-family: var(--mono); font-size: 9px; color: var(--text3); margin-top: 1px; }
+
+/* ═══════════════════════════════════════════════ CENTER PANEL */
+.center-panel {
+  flex: 1; display: flex; flex-direction: column; overflow: hidden;
+  background: var(--bg);
+}
+.center-toolbar {
+  padding: 10px 16px; background: var(--surface); border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px;
+}
+.center-scroll { flex: 1; overflow-y: auto; padding: 16px; }
+.center-scroll::-webkit-scrollbar { width: 4px; }
+.center-scroll::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+/* Active step editor */
+.step-editor {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r); margin-bottom: 12px; overflow: hidden;
+}
+.step-editor-head {
+  padding: 12px 14px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+}
+.step-editor-num {
+  font-family: var(--mono); font-size: 10px; color: var(--text3);
+}
+.step-editor-title { font-size: 13px; font-weight: 600; flex: 1; }
+.step-editor-body { padding: 14px; }
+
+/* Toggle switch */
+.toggle-wrap { display: flex; align-items: center; gap: 6px; }
+.toggle {
+  width: 32px; height: 18px; border-radius: 9px; background: var(--border2);
+  cursor: pointer; position: relative; transition: background .2s; flex-shrink: 0;
+}
+.toggle.on { background: var(--accent); }
+.toggle::after {
+  content: ''; position: absolute; width: 14px; height: 14px;
+  border-radius: 50%; background: #fff; top: 2px; left: 2px;
+  transition: transform .2s; box-shadow: 0 1px 3px rgba(0,0,0,.2);
+}
+.toggle.on::after { transform: translateX(14px); }
+
+/* Block cards in canvas */
+.block-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r); margin-bottom: 8px; overflow: hidden;
+  transition: all .15s; cursor: grab; user-select: none;
+}
+.block-card:active { cursor: grabbing; }
+.block-card.dragging { opacity: .5; border-style: dashed; }
+.block-card.drag-over { border-color: var(--accent); border-style: dashed; }
+.block-card.disabled { opacity: .45; }
+.block-head {
+  padding: 10px 12px; display: flex; align-items: center; gap: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.drag-handle { color: var(--text3); font-size: 14px; cursor: grab; }
+.block-label { font-size: 12px; font-weight: 600; flex: 1; }
+.block-type {
+  font-family: var(--mono); font-size: 9px; color: var(--text3);
+  background: var(--surface2); padding: 2px 6px; border-radius: 3px;
+  letter-spacing: .05em; text-transform: uppercase;
+}
+.block-body { padding: 10px 12px; }
+.block-value {
+  font-family: var(--mono); font-size: 11px; color: var(--text2);
+  line-height: 1.6; word-break: break-word;
+}
+.block-variants-row {
+  display: flex; gap: 4px; margin-top: 8px; flex-wrap: wrap;
+}
+.variant-pill {
+  font-family: var(--mono); font-size: 10px; padding: 3px 8px;
+  border-radius: 20px; border: 1px solid var(--border);
+  cursor: pointer; transition: all .12s; background: var(--surface2);
+  color: var(--text2); white-space: nowrap;
+}
+.variant-pill:hover { border-color: var(--border2); color: var(--text); }
+.variant-pill.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+/* Input styles */
+.input-field {
+  width: 100%; font-family: var(--mono); font-size: 12px;
+  border: 1px solid var(--border); border-radius: var(--r-sm);
+  padding: 8px 10px; background: var(--surface2); color: var(--text);
+  outline: none; resize: vertical; transition: border-color .15s;
+  min-height: 60px;
+}
+.input-field:focus { border-color: var(--border2); background: var(--surface); }
+.input-field.single { min-height: auto; resize: none; }
+.select-field {
+  width: 100%; font-family: var(--sans); font-size: 12px;
+  border: 1px solid var(--border); border-radius: var(--r-sm);
+  padding: 7px 10px; background: var(--surface2); color: var(--text);
+  outline: none; cursor: pointer; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23a09d99'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center;
+}
+.select-field:focus { border-color: var(--border2); }
+.field-label { font-size: 11px; color: var(--text3); margin-bottom: 5px; display: block; }
+.field-group { margin-bottom: 12px; }
+.chip-row { display: flex; gap: 5px; flex-wrap: wrap; }
+.chip {
+  font-size: 11px; padding: 4px 10px; border-radius: 20px;
+  border: 1px solid var(--border); cursor: pointer; transition: all .12s;
+  background: var(--surface2); color: var(--text2);
+}
+.chip:hover { border-color: var(--border2); color: var(--text); }
+.chip.selected { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+/* ═══════════════════════════════════════════════ RIGHT PANEL */
+.right-panel {
+  width: var(--w-right); border-left: 1px solid var(--border);
+  background: var(--surface); display: flex; flex-direction: column;
+  overflow: hidden; flex-shrink: 0;
+}
+.right-tabs {
+  display: flex; border-bottom: 1px solid var(--border); flex-shrink: 0;
+}
+.right-tab {
+  flex: 1; padding: 10px 4px; text-align: center; font-size: 11px;
+  font-weight: 500; color: var(--text3); cursor: pointer; transition: all .15s;
+  border-bottom: 2px solid transparent; letter-spacing: .02em;
+}
+.right-tab:hover { color: var(--text2); }
+.right-tab.active { color: var(--text); border-bottom-color: var(--accent); }
+.right-content { flex: 1; overflow-y: auto; }
+.right-content::-webkit-scrollbar { width: 3px; }
+.right-content::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+.right-section { padding: 14px; border-bottom: 1px solid var(--border); }
+.right-section:last-child { border-bottom: none; }
+.right-section-title {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .12em;
+  color: var(--text3); text-transform: uppercase; margin-bottom: 10px;
+}
+
+/* Prompt preview box */
+.prompt-preview {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 12px; font-family: var(--mono);
+  font-size: 11px; line-height: 1.8; color: var(--text); word-break: break-word;
+  white-space: pre-wrap; min-height: 80px; max-height: 200px; overflow-y: auto;
+}
+.prompt-preview::-webkit-scrollbar { width: 3px; }
+.prompt-preview::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+.prompt-preview.empty { color: var(--text3); font-style: italic; }
+
+/* Score display */
+.score-grid { display: flex; flex-direction: column; gap: 7px; }
+.score-row { display: flex; align-items: center; gap: 8px; }
+.score-label { font-size: 11px; color: var(--text2); flex: 1; }
+.score-badge {
+  font-family: var(--mono); font-size: 10px; padding: 2px 7px;
+  border-radius: 3px; letter-spacing: .04em; font-weight: 500;
+}
+.score-good { background: var(--green-bg); color: var(--green); }
+.score-warn { background: var(--amber-bg); color: var(--amber); }
+.score-bad  { background: var(--red-bg);   color: var(--red); }
+.score-na   { background: var(--surface2); color: var(--text3); }
+.score-bar { height: 3px; border-radius: 2px; background: var(--border); overflow: hidden; margin-top: 2px; }
+.score-fill { height: 100%; border-radius: 2px; background: var(--accent); transition: width .4s; }
+
+/* Variant cards in right panel */
+.variant-card {
+  border: 1px solid var(--border); border-radius: var(--r);
+  padding: 10px 12px; margin-bottom: 8px; cursor: pointer; transition: all .15s;
+}
+.variant-card:hover { border-color: var(--border2); background: var(--surface2); }
+.variant-card.active-variant { border-color: var(--accent); background: var(--accent-soft); }
+.variant-card-head { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+.variant-tag {
+  font-family: var(--mono); font-size: 9px; padding: 2px 6px;
+  border-radius: 3px; font-weight: 500; letter-spacing: .05em;
+}
+.variant-name { font-size: 12px; font-weight: 600; }
+.variant-desc { font-size: 11px; color: var(--text3); line-height: 1.4; }
+.variant-prompt-snippet {
+  font-family: var(--mono); font-size: 10px; color: var(--text2);
+  margin-top: 6px; line-height: 1.5; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+
+/* Snapshot list */
+.snapshot-item {
+  border: 1px solid var(--border); border-radius: var(--r);
+  padding: 10px 12px; margin-bottom: 7px; cursor: pointer; transition: all .15s;
+  display: flex; align-items: flex-start; gap: 8px;
+}
+.snapshot-item:hover { border-color: var(--border2); background: var(--surface2); }
+.snapshot-main { flex: 1; min-width: 0; }
+.snapshot-time { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-bottom: 3px; }
+.snapshot-preview {
+  font-family: var(--mono); font-size: 10px; color: var(--text2);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.snapshot-del { color: var(--text3); font-size: 14px; cursor: pointer; padding: 2px; transition: color .12s; }
+.snapshot-del:hover { color: var(--red); }
+
+/* Char count */
+.char-count { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-top: 6px; }
+
+/* Empty state */
+.empty-state { padding: 24px; text-align: center; color: var(--text3); font-size: 12px; line-height: 1.7; }
+
+/* KBD hint */
+.kbd-hint { display: flex; gap: 12px; flex-wrap: wrap; }
+.kbd { 
+  font-family: var(--mono); font-size: 10px; background: var(--surface2);
+  border: 1px solid var(--border); border-radius: 3px; padding: 2px 5px; color: var(--text3);
+}
+.kbd-label { font-size: 11px; color: var(--text3); }
+
+/* Copy toast */
+#copy-toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(12px);
+  background: var(--accent); color: #fff; padding: 8px 18px;
+  border-radius: 20px; font-size: 12px; font-weight: 500;
+  opacity: 0; transition: all .25s; pointer-events: none; z-index: 999;
+}
+#copy-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* Drag placeholder */
+.drag-placeholder {
+  height: 52px; border: 2px dashed var(--border2); border-radius: var(--r);
+  margin-bottom: 8px; background: var(--surface2);
+}
+
+/* scrollbar everywhere */
+* { scrollbar-width: thin; scrollbar-color: var(--border2) transparent; }
+</style>
 </head>
+<body>
 
-<body style="margin:0;font-family:sans-serif;">
-  <div style="padding:10px;border-bottom:1px solid #ccc;">
-    <b>AI Hub</b>
-    <button onclick="copyPrompt()">Copy</button>
+<div class="app" id="app">
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-brand">Workbench</div>
+    <div class="topbar-divider"></div>
+    <input class="project-name-input" id="project-name" placeholder="Untitled Project" value="金融 KV Banner">
+    <div class="topbar-divider"></div>
+    <div class="topbar-prompt-wrap">
+      <span class="topbar-prompt-label">PROMPT</span>
+      <span class="topbar-prompt-preview" id="topbar-prompt-preview">尚未組合 prompt...</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost btn-sm" onclick="doVariants()">⚡ Variants <kbd style="font-family:var(--mono);font-size:9px;opacity:.5">V</kbd></button>
+      <button class="btn btn-sm" onclick="saveSnapshot()">↓ Save <kbd style="font-family:var(--mono);font-size:9px;opacity:.5">S</kbd></button>
+      <button class="btn btn-primary btn-sm" onclick="copyPrompt()">Copy <kbd style="font-family:var(--mono);font-size:9px;opacity:.7">C</kbd></button>
+    </div>
   </div>
 
-  <div style="display:flex;height:90vh;">
+  <!-- MAIN -->
+  <div class="main">
 
-```
-<!-- Left -->
-<div style="width:250px;border-right:1px solid #ccc;padding:10px;">
-  <h3>Template</h3>
-<select id="template">
-  <option value="kv">金融KV（預設）</option>
-  <option value="youth">年輕活動</option>
-  <option value="luxury">高端品牌</option>
-</select>
-<h3>Subject</h3>
-<textarea id="subject"></textarea>
+    <!-- LEFT PANEL -->
+    <div class="left-panel">
+      <div class="panel-header">
+        <span class="panel-title">Workflow</span>
+        <button class="btn btn-ghost btn-sm btn-icon" id="left-mode-btn" onclick="toggleLeftMode()" title="切換模式">⊞</button>
+      </div>
+      <div class="left-scroll" id="left-panel-body"></div>
+    </div>
 
-  <h3>Subject</h3>
-  <textarea id="subject"></textarea>
+    <!-- CENTER PANEL -->
+    <div class="center-panel">
+      <div class="center-toolbar">
+        <span class="panel-title" style="flex:1;" id="center-toolbar-title">Canvas</span>
+        <button class="btn btn-ghost btn-sm" onclick="addCustomBlock()">+ Block</button>
+        <button class="btn btn-ghost btn-sm" onclick="clearAllBlocks()">Clear</button>
+      </div>
+      <div class="center-scroll" id="canvas-area"></div>
+    </div>
 
-  <h3>Style</h3>
-  <select id="style">
-    <option value="modern commercial illustration">商業插畫</option>
-    <option value="flat illustration">扁平</option>
-  </select>
-</div>
-
-<!-- Center -->
-<div style="flex:1;padding:20px;">
-  <h2>Canvas</h2>
-  <p>這裡未來可以加功能</p>
-</div>
-
-<!-- Right -->
-<div style="width:300px;border-left:1px solid #ccc;padding:10px;">
-  <h3>Prompt</h3>
-  <pre id="output"></pre>
-</div>
-```
+    <!-- RIGHT PANEL -->
+    <div class="right-panel">
+      <div class="right-tabs" id="right-tabs">
+        <div class="right-tab active" data-tab="preview" onclick="switchRightTab('preview')">Preview</div>
+        <div class="right-tab" data-tab="score" onclick="switchRightTab('score')">Score</div>
+        <div class="right-tab" data-tab="variants" onclick="switchRightTab('variants')">Variants</div>
+        <div class="right-tab" data-tab="history" onclick="switchRightTab('history')">History</div>
+      </div>
+      <div class="right-content" id="right-content"></div>
+    </div>
 
   </div>
+</div>
+
+<div id="copy-toast">✓ Copied</div>
 
 <script>
-function generate() {
-  const subject = document.getElementById("subject").value;
-  const style = document.getElementById("style").value;
+// ═══════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════
+const STATE = {
+  activeStep: 'subject',
+  leftMode: 'steps',   // 'steps' | 'templates'
+  rightTab: 'preview',
+  usageMode: 'banner',
+  activeVariantIdx: null,
+  snapshots: JSON.parse(localStorage.getItem('wb_snapshots') || '[]'),
+  generatedVariants: [],
+  blocks: [
+    { id: 'subject',  label: 'Subject',  enabled: true, value: 'happy couple, travelers, airport departure hall', variants: ['couple with luggage, excited', 'business professional, confident', 'family vacation, joyful'], activeVariant: 0 },
+    { id: 'layout',   label: 'Layout',   enabled: true, value: 'left-heavy composition, right side reserved for text overlay, space for typography', variants: ['centered composition, symmetrical', 'rule of thirds, dynamic diagonal', 'full-bleed, edge-to-edge'], activeVariant: 0 },
+    { id: 'style',    label: 'Style',    enabled: true, value: '3D render, cartoon style, smooth shading, volumetric', variants: ['photorealistic, hyperdetailed', 'flat design, minimal illustration', 'editorial photography, clean'], activeVariant: 0 },
+    { id: 'lighting', label: 'Lighting', enabled: true, value: 'soft diffused sunlight, natural outdoor illumination, warm atmosphere', variants: ['golden hour, warm backlight glow', 'studio lighting, clean bright', 'dramatic cinematic, deep contrast'], activeVariant: 0 },
+    { id: 'color',    label: 'Color',    enabled: true, value: 'vibrant coral and white, energetic lifestyle palette, fresh tropical feel', variants: ['deep navy and gold, premium financial', 'soft cream and sage, organic modern', 'black and white with red accent'], activeVariant: 0 },
+    { id: 'quality',  label: 'Quality',  enabled: true, value: 'masterpiece, best quality, highly detailed, 8K resolution', variants: ['ultra high res, sharp focus', 'cinematic film still, 35mm grain', 'professional stock photo quality'], activeVariant: 0 },
+  ],
+};
 
-  const prompt = subject + ", financial campaign, " + style;
-  document.getElementById("output").innerText = prompt;
+// Step definitions (for left panel nav)
+const STEPS = [
+  { id: 'template', label: 'Template',  icon: '▣' },
+  { id: 'subject',  label: 'Subject',   icon: '◉' },
+  { id: 'layout',   label: 'Layout',    icon: '▤' },
+  { id: 'style',    label: 'Style',     icon: '◈' },
+  { id: 'lighting', label: 'Lighting',  icon: '◐' },
+  { id: 'color',    label: 'Color',     icon: '◑' },
+  { id: 'usage',    label: 'Usage Mode',icon: '⊡' },
+];
+
+const TEMPLATES = [
+  { id: 'finance-kv', name: '金融 KV Banner', desc: '高級感、留白構圖、文案空間',
+    blocks: {
+      subject: 'elegant business professional, confident posture, financial success',
+      layout: 'left-heavy composition, right side reserved for text overlay, generous white space',
+      style: 'editorial photography, ultra clean, premium look',
+      lighting: 'soft studio lighting, bright and airy, premium commercial',
+      color: 'deep navy and gold, sophisticated financial palette',
+      quality: 'masterpiece, 8K resolution, professional commercial photography',
+    }
+  },
+  { id: 'lifestyle', name: '生活風格 Social', desc: '活力、鮮豔、社群媒體',
+    blocks: {
+      subject: 'happy couple, travelers, excited lifestyle, vibrant energy',
+      layout: 'centered composition, dynamic and energetic, full visual impact',
+      style: '3D render, cartoon style, smooth shading, volumetric',
+      lighting: 'bright daylight, vibrant sunlit, energetic atmosphere',
+      color: 'vibrant coral and white, fresh tropical, energetic lifestyle palette',
+      quality: 'highly detailed, sharp focus, vivid colors, social media optimized',
+    }
+  },
+  { id: 'product', name: '商品展示 App UI', desc: '乾淨、白底、聚焦產品',
+    blocks: {
+      subject: 'premium product showcase, clean white background, hero shot',
+      layout: 'centered product, minimal surrounding space, clean margins',
+      style: 'product photography, ultra clean, minimal aesthetic',
+      lighting: 'even studio lighting, no harsh shadows, product-focused',
+      color: 'white and light grey, clean minimal palette',
+      quality: 'ultra sharp, perfect focus, commercial product quality',
+    }
+  },
+  { id: 'event', name: '活動主視覺 Event', desc: '大氣、強衝擊、活動感',
+    blocks: {
+      subject: 'dynamic crowd, celebration event, energetic atmosphere',
+      layout: 'dramatic full-bleed composition, bold visual hierarchy',
+      style: 'cinematic illustration, dramatic render, high impact',
+      lighting: 'dramatic stage lighting, spotlights, event atmosphere',
+      color: 'black and gold, premium event palette, high contrast',
+      quality: 'masterpiece, cinematic quality, event poster grade',
+    }
+  },
+];
+
+const USAGES = [
+  { id: 'banner',  name: 'Banner',     size: '1920×600', icon: '▬', suffix: '--ar 16:9' },
+  { id: 'social',  name: 'Social Post',size: '1080×1080',icon: '◻', suffix: '--ar 1:1' },
+  { id: 'story',   name: 'Story',      size: '1080×1920',icon: '▮', suffix: '--ar 9:16' },
+  { id: 'appui',   name: 'App UI',     size: '375×812',  icon: '▯', suffix: '--ar 9:19.5' },
+];
+
+const STRATEGIC_VARIANTS = [
+  {
+    name: '安全版', tag: 'SAFE', color: '#2563eb', tagBg: '#dbeafe', tagText: '#1e40af',
+    desc: '偏向穩重、中性，適合大量曝光',
+    overrides: {
+      lighting: 'soft diffused sunlight, natural and approachable',
+      color: 'blue and white, trustworthy financial palette',
+      layout: 'left-heavy composition, right side reserved for text, balanced',
+    }
+  },
+  {
+    name: '吸睛版', tag: 'BOLD', color: '#dc2626', tagBg: '#fee2e2', tagText: '#991b1b',
+    desc: '強衝擊感、高對比，適合首頁廣告',
+    overrides: {
+      lighting: 'dramatic cinematic lighting, deep contrast, moody shadows',
+      color: 'black and gold, high contrast premium palette',
+      layout: 'centered composition, dynamic diagonal, full-bleed impact',
+    }
+  },
+  {
+    name: '品牌版', tag: 'BRAND', color: '#059669', tagBg: '#d1fae5', tagText: '#065f46',
+    desc: '極簡品牌感、留白、高級',
+    overrides: {
+      style: 'editorial photography, minimal, clean premium look',
+      lighting: 'soft even studio lighting, airy and bright',
+      color: 'cream white and charcoal, editorial brand palette',
+    }
+  },
+];
+
+// ═══════════════════════════════════════════════════════════════
+// COMPOSE PROMPT
+// ═══════════════════════════════════════════════════════════════
+function composePrompt(blocks, overrides = {}) {
+  const usage = USAGES.find(u => u.id === STATE.usageMode);
+  const suffix = usage ? usage.suffix : '';
+  const parts = blocks
+    .filter(b => b.enabled)
+    .map(b => overrides[b.id] || b.value)
+    .filter(Boolean);
+  const prompt = parts.join(', ');
+  return suffix ? prompt + ' ' + suffix : prompt;
 }
 
-document.querySelectorAll("textarea, select").forEach(el => {
-  el.addEventListener("input", generate);
-});
+function getPrompt() { return composePrompt(STATE.blocks); }
+
+// ═══════════════════════════════════════════════════════════════
+// SCORE (rule-based)
+// ═══════════════════════════════════════════════════════════════
+function scorePrompt(prompt) {
+  const p = prompt.toLowerCase();
+  const scores = {};
+
+  // Commercial usability
+  const commercialKeywords = ['masterpiece', 'best quality', 'highly detailed', 'professional', '8k', 'ultra', 'commercial'];
+  const commercialHits = commercialKeywords.filter(k => p.includes(k)).length;
+  scores.commercial = commercialHits >= 3 ? 'good' : commercialHits >= 1 ? 'warn' : 'bad';
+
+  // Typography space
+  const typographyKeywords = ['space for typography', 'text overlay', 'reserved for text', 'white space', 'space for text', 'typography'];
+  scores.typography = typographyKeywords.some(k => p.includes(k)) ? 'good' : 'warn';
+
+  // Layout clarity
+  const layoutKeywords = ['left', 'right', 'center', 'composition', 'rule of thirds', 'full-bleed', 'heavy'];
+  scores.layout = layoutKeywords.some(k => p.includes(k)) ? 'good' : 'warn';
+
+  // Style consistency (warn if too many styles mentioned)
+  const styleWords = ['3d', 'photorealistic', 'cartoon', 'illustration', 'editorial', 'flat', 'cinematic', 'anime'];
+  const styleHits = styleWords.filter(k => p.includes(k)).length;
+  scores.consistency = styleHits <= 2 ? 'good' : styleHits <= 3 ? 'warn' : 'bad';
+
+  // Prompt length score
+  const wordCount = prompt.split(',').filter(Boolean).length;
+  scores.richness = wordCount >= 8 ? 'good' : wordCount >= 4 ? 'warn' : 'bad';
+
+  // Overall
+  const values = Object.values(scores);
+  const goods = values.filter(v => v === 'good').length;
+  scores._total = Math.round((goods / values.length) * 100);
+
+  return scores;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER LEFT PANEL
+// ═══════════════════════════════════════════════════════════════
+function renderLeft() {
+  const body = document.getElementById('left-panel-body');
+
+  if (STATE.leftMode === 'templates') {
+    body.innerHTML = `
+      <div class="template-section">
+        ${TEMPLATES.map(t => `
+          <div class="template-card" onclick="applyTemplate('${t.id}')">
+            <div class="template-card-name">${t.name}</div>
+            <div class="template-card-desc">${t.desc}</div>
+          </div>`).join('')}
+      </div>`;
+    return;
+  }
+
+  // Steps mode
+  body.innerHTML = `
+    ${STEPS.map((s, i) => {
+      const block = STATE.blocks.find(b => b.id === s.id);
+      const filled = block ? block.enabled && block.value : (s.id === 'usage');
+      return `
+        <div class="step-item ${STATE.activeStep === s.id ? 'active' : ''}" onclick="setActiveStep('${s.id}')">
+          <span class="step-num">${String(i+1).padStart(2,'0')}</span>
+          <span class="step-label">${s.label}</span>
+          <span class="step-status ${filled ? 'filled' : ''}"></span>
+        </div>`;
+    }).join('')}
+    <div style="padding:12px 16px 8px; margin-top:8px; border-top:1px solid var(--border);">
+      <div class="panel-title" style="margin-bottom:8px;">Usage Mode</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;">
+        ${USAGES.map(u => `
+          <div class="usage-card ${STATE.usageMode === u.id ? 'selected' : ''}" onclick="setUsage('${u.id}')">
+            <div class="usage-card-icon">${u.icon}</div>
+            <div class="usage-card-name">${u.name}</div>
+            <div class="usage-card-size">${u.size}</div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER CENTER (CANVAS)
+// ═══════════════════════════════════════════════════════════════
+function renderCanvas() {
+  const area = document.getElementById('canvas-area');
+
+  // Show active step editor at top
+  const step = STEPS.find(s => s.id === STATE.activeStep);
+  let editorHtml = '';
+
+  if (STATE.activeStep === 'template') {
+    editorHtml = `
+      <div class="step-editor" style="margin-bottom:16px;">
+        <div class="step-editor-head">
+          <span class="step-editor-num">00</span>
+          <span class="step-editor-title">選擇模板</span>
+        </div>
+        <div class="step-editor-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            ${TEMPLATES.map(t => `
+              <div class="template-card" onclick="applyTemplate('${t.id}')">
+                <div class="template-card-name">${t.name}</div>
+                <div class="template-card-desc">${t.desc}</div>
+              </div>`).join('')}
+          </div>
+        </div>
+      </div>`;
+  } else if (STATE.activeStep === 'usage') {
+    editorHtml = `
+      <div class="step-editor" style="margin-bottom:16px;">
+        <div class="step-editor-head">
+          <span class="step-editor-num">07</span>
+          <span class="step-editor-title">Usage Mode</span>
+        </div>
+        <div class="step-editor-body">
+          <div class="usage-grid" style="padding:0;">
+            ${USAGES.map(u => `
+              <div class="usage-card ${STATE.usageMode === u.id ? 'selected' : ''}" onclick="setUsage('${u.id}')">
+                <div class="usage-card-icon">${u.icon}</div>
+                <div class="usage-card-name">${u.name}</div>
+                <div class="usage-card-size">${u.size}</div>
+              </div>`).join('')}
+          </div>
+        </div>
+      </div>`;
+  } else {
+    const block = STATE.blocks.find(b => b.id === STATE.activeStep);
+    const stepIdx = STEPS.findIndex(s => s.id === STATE.activeStep);
+    if (block) {
+      editorHtml = `
+        <div class="step-editor" style="margin-bottom:16px;">
+          <div class="step-editor-head">
+            <span class="step-editor-num">${String(stepIdx+1).padStart(2,'0')}</span>
+            <span class="step-editor-title">${step ? step.label : block.label}</span>
+            <div class="toggle-wrap" style="margin-left:auto;">
+              <div class="toggle ${block.enabled ? 'on' : ''}" onclick="toggleBlock('${block.id}')"></div>
+              <span style="font-size:11px;color:var(--text3);">${block.enabled ? 'On' : 'Off'}</span>
+            </div>
+          </div>
+          <div class="step-editor-body">
+            <div class="field-group">
+              <label class="field-label">Prompt 內容</label>
+              <textarea class="input-field" rows="3"
+                onchange="updateBlockValue('${block.id}', this.value)"
+                oninput="updateBlockValue('${block.id}', this.value)"
+              >${block.value}</textarea>
+            </div>
+            <div class="field-group">
+              <label class="field-label">快速變體（點選套用）</label>
+              <div class="chip-row">
+                ${block.variants.map((v, i) => `
+                  <div class="chip ${block.activeVariant === i ? 'selected' : ''}"
+                    onclick="applyBlockVariant('${block.id}', ${i})"
+                    title="${v}"
+                  >${v.split(',')[0].trim()}</div>`).join('')}
+              </div>
+            </div>
+          </div>
+        </div>`;
+    }
+  }
+
+  // Canvas blocks (draggable)
+  const blocksHtml = STATE.blocks.map((b, i) => `
+    <div class="block-card ${b.enabled ? '' : 'disabled'}"
+      id="block-${b.id}"
+      draggable="true"
+      ondragstart="dragStart(event,'${b.id}')"
+      ondragover="dragOver(event,'${b.id}')"
+      ondrop="drop(event,'${b.id}')"
+      ondragend="dragEnd(event)">
+      <div class="block-head">
+        <span class="drag-handle" title="拖曳排序">⠿</span>
+        <span class="block-label">${b.label}</span>
+        <span class="block-type">${b.id}</span>
+        <div class="toggle ${b.enabled ? 'on' : ''}" onclick="toggleBlock('${b.id}')" style="margin-left:auto;"></div>
+      </div>
+      <div class="block-body">
+        <div class="block-value">${esc(b.value) || '<span style="color:var(--text3);font-style:italic;">（空）</span>'}</div>
+        <div class="block-variants-row">
+          ${b.variants.map((v, vi) => `
+            <span class="variant-pill ${b.activeVariant === vi ? 'active' : ''}"
+              onclick="applyBlockVariant('${b.id}', ${vi})"
+            >${v.split(',')[0].trim()}</span>`).join('')}
+        </div>
+      </div>
+    </div>`).join('');
+
+  area.innerHTML = editorHtml + `
+    <div style="font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;">
+      Canvas — 拖曳排序 · 切換開關 · 點選 Variant
+    </div>
+    ${blocksHtml}
+    <div style="height:32px;"></div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER RIGHT PANEL
+// ═══════════════════════════════════════════════════════════════
+function renderRight() {
+  const prompt = getPrompt();
+  const el = document.getElementById('right-content');
+  const tab = STATE.rightTab;
+
+  if (tab === 'preview') {
+    el.innerHTML = `
+      <div class="right-section">
+        <div class="right-section-title">Prompt Preview</div>
+        <div class="prompt-preview ${prompt ? '' : 'empty'}">${prompt || '尚未填入任何 Block 內容...'}</div>
+        <div class="char-count">${prompt.length} chars · ${prompt.split(',').filter(Boolean).length} segments</div>
+        <div style="margin-top:10px;display:flex;gap:6px;">
+          <button class="btn btn-primary btn-sm" style="flex:1;" onclick="copyPrompt()">Copy Prompt</button>
+          <button class="btn btn-sm" onclick="saveSnapshot()">Save</button>
+        </div>
+      </div>
+      <div class="right-section">
+        <div class="right-section-title">Keyboard Shortcuts</div>
+        <div class="kbd-hint">
+          <span class="kbd">C</span><span class="kbd-label">Copy</span>
+          <span class="kbd">V</span><span class="kbd-label">Variants</span>
+          <span class="kbd">S</span><span class="kbd-label">Save</span>
+        </div>
+      </div>`;
+  } else if (tab === 'score') {
+    const scores = scorePrompt(prompt);
+    const labels = {
+      commercial: '商業可用性', typography: '文案空間', layout: '構圖明確',
+      consistency: '風格一致性', richness: 'Prompt 豐富度'
+    };
+    el.innerHTML = `
+      <div class="right-section">
+        <div class="right-section-title">Prompt Score</div>
+        <div style="margin-bottom:12px;">
+          <div style="font-size:28px;font-weight:600;font-family:var(--mono);">${scores._total}<span style="font-size:14px;color:var(--text3);">/100</span></div>
+          <div class="score-bar" style="margin-top:6px;">
+            <div class="score-fill" style="width:${scores._total}%;background:${scores._total>=70?'var(--green)':scores._total>=40?'var(--amber)':'var(--red)'};"></div>
+          </div>
+        </div>
+        <div class="score-grid">
+          ${Object.entries(labels).map(([k, label]) => `
+            <div class="score-row">
+              <span class="score-label">${label}</span>
+              <span class="score-badge score-${scores[k] || 'na'}">${
+                scores[k] === 'good' ? 'GOOD' : scores[k] === 'warn' ? 'WARN' : scores[k] === 'bad' ? 'LOW' : '—'
+              }</span>
+            </div>`).join('')}
+        </div>
+        <div style="margin-top:12px;padding:10px;background:var(--surface2);border-radius:var(--r);font-size:11px;color:var(--text3);line-height:1.7;">
+          ${scores.typography === 'warn' ? '⚠ 建議加入「space for typography」或「text overlay」以確保文案空間<br>' : ''}
+          ${scores.consistency === 'warn' || scores.consistency === 'bad' ? '⚠ 風格關鍵字過多，建議統一為 1-2 種主要風格<br>' : ''}
+          ${scores.commercial === 'bad' ? '⚠ 建議加入 masterpiece、highly detailed 等品質詞<br>' : ''}
+          ${scores._total >= 80 ? '✓ 整體品質優良，可直接用於生圖平台' : ''}
+        </div>
+      </div>`;
+  } else if (tab === 'variants') {
+    const variantsHtml = STATE.generatedVariants.length === 0 ? `
+      <div class="empty-state">按下 ⚡ Variants<br>產出 3 種策略版本</div>` :
+      STATE.generatedVariants.map((v, i) => `
+        <div class="variant-card ${STATE.activeVariantIdx === i ? 'active-variant' : ''}" onclick="applyVariant(${i})">
+          <div class="variant-card-head">
+            <span class="variant-tag" style="background:${v.tagBg};color:${v.tagText};">${v.tag}</span>
+            <span class="variant-name">${v.name}</span>
+          </div>
+          <div class="variant-desc">${v.desc}</div>
+          <div class="variant-prompt-snippet">${v.prompt}</div>
+        </div>`).join('');
+    el.innerHTML = `
+      <div class="right-section">
+        <div class="right-section-title">Strategic Variants</div>
+        <button class="btn btn-sm" style="width:100%;margin-bottom:12px;" onclick="doVariants()">⚡ Generate Variants</button>
+        ${variantsHtml}
+      </div>`;
+  } else if (tab === 'history') {
+    const snaps = STATE.snapshots;
+    el.innerHTML = `
+      <div class="right-section">
+        <div class="right-section-title">Snapshots（${snaps.length}）</div>
+        ${snaps.length === 0 ? '<div class="empty-state">尚無快照<br>按 S 儲存目前版本</div>' :
+          snaps.map((s, i) => `
+            <div class="snapshot-item">
+              <div class="snapshot-main" onclick="loadSnapshot(${i})">
+                <div class="snapshot-time">${new Date(s.createdAt).toLocaleString('zh-TW')}</div>
+                <div class="snapshot-preview">${s.prompt}</div>
+              </div>
+              <div class="snapshot-del" onclick="deleteSnapshot(${i})" title="刪除">×</div>
+            </div>`).join('')}
+        ${snaps.length > 0 ? `<button class="btn btn-sm" style="width:100%;margin-top:8px;color:var(--red);" onclick="clearSnapshots()">清除全部</button>` : ''}
+      </div>`;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TOPBAR PROMPT PREVIEW
+// ═══════════════════════════════════════════════════════════════
+function updateTopbar() {
+  const p = getPrompt();
+  document.getElementById('topbar-prompt-preview').textContent = p || '尚未組合 prompt...';
+}
+
+// ═══════════════════════════════════════════════════════════════
+// FULL RENDER
+// ═══════════════════════════════════════════════════════════════
+function render() {
+  renderLeft();
+  renderCanvas();
+  renderRight();
+  updateTopbar();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ACTIONS
+// ═══════════════════════════════════════════════════════════════
+function setActiveStep(id) {
+  STATE.activeStep = id;
+  render();
+}
+
+function toggleLeftMode() {
+  STATE.leftMode = STATE.leftMode === 'steps' ? 'templates' : 'steps';
+  document.getElementById('left-mode-btn').textContent = STATE.leftMode === 'steps' ? '⊞' : '☰';
+  renderLeft();
+}
+
+function setUsage(id) {
+  STATE.usageMode = id;
+  render();
+}
+
+function toggleBlock(id) {
+  const b = STATE.blocks.find(b => b.id === id);
+  if (b) { b.enabled = !b.enabled; render(); }
+}
+
+function updateBlockValue(id, val) {
+  const b = STATE.blocks.find(b => b.id === id);
+  if (b) { b.value = val; updateTopbar(); renderRight(); renderLeft(); }
+}
+
+function applyBlockVariant(id, idx) {
+  const b = STATE.blocks.find(b => b.id === id);
+  if (b) {
+    b.activeVariant = idx;
+    b.value = b.variants[idx];
+    render();
+  }
+}
+
+function applyTemplate(id) {
+  const t = TEMPLATES.find(t => t.id === id);
+  if (!t) return;
+  STATE.blocks.forEach(b => {
+    if (t.blocks[b.id]) {
+      b.value = t.blocks[b.id];
+      b.enabled = true;
+    }
+  });
+  STATE.activeStep = 'subject';
+  render();
+  showToast('✓ 模板已套用：' + t.name);
+}
+
+function doVariants() {
+  const basePrompt = getPrompt();
+  STATE.generatedVariants = STRATEGIC_VARIANTS.map(sv => {
+    const variantPrompt = composePrompt(STATE.blocks, sv.overrides);
+    return { ...sv, prompt: variantPrompt };
+  });
+  STATE.activeVariantIdx = null;
+  STATE.rightTab = 'variants';
+  document.querySelectorAll('.right-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.tab === 'variants');
+  });
+  renderRight();
+}
+
+function applyVariant(idx) {
+  STATE.activeVariantIdx = idx;
+  const v = STATE.generatedVariants[idx];
+  if (!v) return;
+  Object.entries(v.overrides).forEach(([k, val]) => {
+    const b = STATE.blocks.find(b => b.id === k);
+    if (b) { b.value = val; b.enabled = true; }
+  });
+  render();
+  showToast('✓ 套用：' + v.name);
+}
 
 function copyPrompt() {
-  navigator.clipboard.writeText(document.getElementById("output").innerText);
+  const p = getPrompt();
+  if (!p) { showToast('Prompt 是空的'); return; }
+  navigator.clipboard.writeText(p).then(() => showToast('✓ Copied!'));
+  // also update hub clipboard
+  localStorage.setItem('hub_prompt', JSON.stringify({ text: p, source: 'workbench', time: Date.now() }));
 }
 
-generate();
-</script>
+function saveSnapshot() {
+  const p = getPrompt();
+  if (!p) { showToast('Prompt 是空的'); return; }
+  const snap = {
+    id: Date.now(),
+    prompt: p,
+    blocks: JSON.parse(JSON.stringify(STATE.blocks)),
+    createdAt: Date.now(),
+  };
+  STATE.snapshots.unshift(snap);
+  if (STATE.snapshots.length > 20) STATE.snapshots.pop();
+  localStorage.setItem('wb_snapshots', JSON.stringify(STATE.snapshots));
+  if (STATE.rightTab === 'history') renderRight();
+  showToast('✓ Snapshot saved');
+}
 
+function loadSnapshot(idx) {
+  const s = STATE.snapshots[idx];
+  if (!s) return;
+  STATE.blocks = JSON.parse(JSON.stringify(s.blocks));
+  render();
+  showToast('✓ 已載入 Snapshot');
+}
+
+function deleteSnapshot(idx) {
+  STATE.snapshots.splice(idx, 1);
+  localStorage.setItem('wb_snapshots', JSON.stringify(STATE.snapshots));
+  renderRight();
+}
+
+function clearSnapshots() {
+  if (!confirm('確定清除所有快照？')) return;
+  STATE.snapshots = [];
+  localStorage.removeItem('wb_snapshots');
+  renderRight();
+}
+
+function addCustomBlock() {
+  const label = prompt('Block 名稱（英文）：');
+  if (!label) return;
+  const val = prompt('預設 Prompt 內容：') || '';
+  STATE.blocks.push({
+    id: 'custom_' + Date.now(),
+    label: label,
+    enabled: true,
+    value: val,
+    variants: [],
+    activeVariant: -1,
+  });
+  render();
+}
+
+function clearAllBlocks() {
+  if (!confirm('清除所有 Block 內容？')) return;
+  STATE.blocks.forEach(b => { b.value = ''; b.enabled = true; });
+  render();
+}
+
+function switchRightTab(tab) {
+  STATE.rightTab = tab;
+  document.querySelectorAll('.right-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  renderRight();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// DRAG & DROP
+// ═══════════════════════════════════════════════════════════════
+let dragId = null;
+
+function dragStart(e, id) {
+  dragId = id;
+  e.dataTransfer.effectAllowed = 'move';
+  setTimeout(() => {
+    const el = document.getElementById('block-' + id);
+    if (el) el.classList.add('dragging');
+  }, 0);
+}
+
+function dragOver(e, id) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  document.querySelectorAll('.block-card').forEach(el => el.classList.remove('drag-over'));
+  if (id !== dragId) {
+    const el = document.getElementById('block-' + id);
+    if (el) el.classList.add('drag-over');
+  }
+}
+
+function drop(e, targetId) {
+  e.preventDefault();
+  if (!dragId || dragId === targetId) return;
+  const fromIdx = STATE.blocks.findIndex(b => b.id === dragId);
+  const toIdx   = STATE.blocks.findIndex(b => b.id === targetId);
+  if (fromIdx < 0 || toIdx < 0) return;
+  const [moved] = STATE.blocks.splice(fromIdx, 1);
+  STATE.blocks.splice(toIdx, 0, moved);
+  dragId = null;
+  render();
+}
+
+function dragEnd(e) {
+  dragId = null;
+  document.querySelectorAll('.block-card').forEach(el => {
+    el.classList.remove('dragging', 'drag-over');
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// KEYBOARD SHORTCUTS
+// ═══════════════════════════════════════════════════════════════
+document.addEventListener('keydown', (e) => {
+  const tag = document.activeElement.tagName;
+  if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+  if (e.key === 'c' || e.key === 'C') { e.preventDefault(); copyPrompt(); }
+  if (e.key === 'v' || e.key === 'V') { e.preventDefault(); doVariants(); }
+  if (e.key === 's' || e.key === 'S') { e.preventDefault(); saveSnapshot(); }
+});
+
+// ═══════════════════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════════════════
+function esc(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+let toastTimer;
+function showToast(msg) {
+  const el = document.getElementById('copy-toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════
+render();
+</script>
 </body>
 </html>
