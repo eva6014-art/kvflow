@@ -830,7 +830,7 @@ function renderCanvas() {
                   <div class="chip ${block.activeVariant === i ? 'selected' : ''}"
                     onclick="applyBlockVariant('${block.id}', ${i})"
                     title="${v}"
-                  >${v.split(',')[0].trim()}</div>`).join('')}
+                  >${(VARIANT_LABELS[block.id] && VARIANT_LABELS[block.id][i]) || v.split(',')[0].trim()}</div>`).join('')}
               </div>
             </div>
           </div>
@@ -859,7 +859,7 @@ function renderCanvas() {
           ${b.variants.map((v, vi) => `
             <span class="variant-pill ${b.activeVariant === vi ? 'active' : ''}"
               onclick="applyBlockVariant('${b.id}', ${vi})"
-            >${v.split(',')[0].trim()}</span>`).join('')}
+            >${(VARIANT_LABELS[b.id] && VARIANT_LABELS[b.id][vi]) || v.split(',')[0].trim()}</span>`).join('')}
         </div>
       </div>
     </div>`).join('');
