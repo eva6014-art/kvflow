@@ -451,12 +451,97 @@ const STATE = {
   generatedVariants: [],
   _lastTranslation: '',
   blocks: [
-    { id: 'subject',  label: '主體',  enabled: true, value: 'happy couple, travelers, airport departure hall', variants: ['couple with luggage, excited', 'business professional, confident', 'family vacation, joyful'], activeVariant: 0 },
-    { id: 'layout',   label: '構圖',   enabled: true, value: 'left-heavy composition, right side reserved for text overlay, space for typography', variants: ['centered composition, symmetrical', 'rule of thirds, dynamic diagonal', 'full-bleed, edge-to-edge'], activeVariant: 0 },
-    { id: 'style',    label: '風格',    enabled: true, value: '3D render, cartoon style, smooth shading, volumetric', variants: ['photorealistic, hyperdetailed', 'flat design, minimal illustration', 'editorial photography, clean'], activeVariant: 0 },
-    { id: 'lighting', label: '光影', enabled: true, value: 'soft diffused sunlight, natural outdoor illumination, warm atmosphere', variants: ['golden hour, warm backlight glow', 'studio lighting, clean bright', 'dramatic cinematic, deep contrast'], activeVariant: 0 },
-    { id: 'color',    label: '色彩',    enabled: true, value: 'vibrant coral and white, energetic lifestyle palette, fresh tropical feel', variants: ['deep navy and gold, premium financial', 'soft cream and sage, organic modern', 'black and white with red accent'], activeVariant: 0 },
-    { id: 'quality',  label: '品質詞',  enabled: true, value: 'masterpiece, best quality, highly detailed, 8K resolution', variants: ['ultra high res, sharp focus', 'cinematic film still, 35mm grain', 'professional stock photo quality'], activeVariant: 0 },
+    {
+      id: 'subject', label: '主體描述', enabled: true,
+      value: 'happy couple, travelers, airport departure hall, excited',
+      variants: [
+        'happy couple, travelers, airport departure hall, excited',
+        'business professional, confident posture, financial success',
+        'family vacation, joyful, summer holiday energy',
+        'premium product showcase, hero shot, clean background',
+        'elegant woman, lifestyle portrait, natural environment',
+      ], activeVariant: 0
+    },
+    {
+      id: 'layout', label: '構圖版式', enabled: true,
+      value: 'left-heavy composition, right side reserved for text',
+      variants: [
+        'rule of thirds composition',
+        'centered symmetrical composition',
+        'left-heavy composition, right side reserved for text',
+        'right-heavy composition, left side reserved for text',
+        'dynamic diagonal composition',
+        'close-up product shot, macro detail',
+      ], activeVariant: 2
+    },
+    {
+      id: 'style', label: '插畫風格', enabled: true,
+      value: 'photorealistic, ultra-detailed photography, sharp focus',
+      variants: [
+        'photorealistic, ultra-detailed photography, sharp focus',
+        'minimalist product photography, clean white studio background, professional lighting',
+        'luxury brand campaign photography, editorial fashion',
+        'cinematic film still, anamorphic lens, movie-quality render, 35mm film grain',
+        'flat vector illustration, clean geometric shapes, bold colors, no gradients',
+        'editorial illustration, magazine style, conceptual art, sophisticated composition',
+        '3D render, glossy materials, depth of field, octane render, studio lighting',
+        '3D clay icon style, soft matte texture, pastel colors, cute chibi proportions',
+        'watercolor painting, soft washes, bleeding edges, delicate brushwork, paper texture',
+        'Japanese anime illustration style, vibrant colors, clean linework',
+        'Japanese flat poster art style, retro travel poster aesthetic, limited color palette',
+        'pop art style, bold outlines, Ben-Day dots, high saturation, Andy Warhol inspired',
+        'cyberpunk aesthetic, neon lights, rain-soaked streets, dystopian city, high contrast',
+      ], activeVariant: 0
+    },
+    {
+      id: 'lighting', label: '光影設定', enabled: true,
+      value: 'natural light, soft diffused sunlight, realistic outdoor illumination',
+      variants: [
+        'dramatic cinematic lighting, volumetric light rays, deep shadows, god rays',
+        'natural light, soft diffused sunlight, realistic outdoor illumination',
+        'neon lights, colorful LED reflections, wet surface glow, cyberpunk illumination',
+        'golden hour sunlight, warm amber backlight, long soft shadows, magic hour',
+        'professional studio lighting, softbox, clean even illumination, product-grade',
+        'volumetric lighting, light shafts through atmosphere, god rays, dust particles',
+        'soft diffuse lighting, overcast sky, shadowless, gentle wrap-around fill',
+        'rim lighting, glowing edges, backlit silhouette, halo effect',
+        'high-key bright lighting, clean airy aesthetic, minimal shadows, lifestyle mood',
+        'low-key moody lighting, rich dark tones, chiaroscuro, deep shadows',
+      ], activeVariant: 1
+    },
+    {
+      id: 'color', label: '色彩配置', enabled: true,
+      value: 'deep navy blue and gold color palette, premium financial aesthetic, rich dark tones',
+      variants: [
+        'deep navy blue and gold color palette, premium financial aesthetic, rich dark tones',
+        'monochromatic black and white with single gold accent, high contrast luxury',
+        'cool silver and midnight blue, tech fintech, metallic sheen',
+        'rich emerald green and champagne gold, wealth and prosperity',
+        'deep burgundy and rose gold, luxury premium, sophisticated feminine',
+        'charcoal grey and electric blue, modern corporate fintech',
+        'pure white and platinum silver, ultra clean minimal luxury',
+        'vibrant coral and white, energetic lifestyle, fresh tropical feel',
+        'warm terracotta and cream tones, earthy Mediterranean lifestyle',
+        'muted sage green and warm beige, modern minimalist wellness',
+        'sky blue and sunny yellow, cheerful travel optimism, summer holiday',
+        'deep ocean teal and sandy beige, coastal luxury resort',
+        'dusty rose and warm ivory, romantic soft feminine lifestyle',
+        'forest green and cognac brown, adventure outdoor premium',
+        'neon cyan and deep purple, futuristic tech cyberpunk glow',
+        'holographic iridescent pastel, pearl shimmer, future luxury',
+        'warm amber and deep indigo, moody artistic editorial contrast',
+        'pastel rainbow soft gradient, dreamy kawaii, cotton candy palette',
+      ], activeVariant: 0
+    },
+    {
+      id: 'quality', label: '品質詞', enabled: true,
+      value: 'masterpiece, best quality, highly detailed, 8K resolution',
+      variants: [
+        'masterpiece, best quality, highly detailed, 8K resolution',
+        'professional quality, commercial grade',
+        'award-winning photography, editorial quality',
+      ], activeVariant: 0
+    },
   ],
 };
 
@@ -474,42 +559,42 @@ const STEPS = [
 const TEMPLATES = [
   { id: 'finance-kv', name: '金融 KV Banner', desc: '高級感、留白構圖、文案空間',
     blocks: {
-      subject: 'elegant business professional, confident posture, financial success',
-      layout: 'left-heavy composition, right side reserved for text overlay, generous white space',
-      style: 'editorial photography, ultra clean, premium look',
-      lighting: 'soft studio lighting, bright and airy, premium commercial',
-      color: 'deep navy and gold, sophisticated financial palette',
-      quality: 'masterpiece, 8K resolution, professional commercial photography',
+      subject: 'business professional, confident posture, financial success',
+      layout: 'left-heavy composition, right side reserved for text',
+      style: 'luxury brand campaign photography, editorial fashion',
+      lighting: 'professional studio lighting, softbox, clean even illumination, product-grade',
+      color: 'deep navy blue and gold color palette, premium financial aesthetic, rich dark tones',
+      quality: 'masterpiece, best quality, highly detailed, 8K resolution',
     }
   },
   { id: 'lifestyle', name: '生活風格 Social', desc: '活力、鮮豔、社群媒體',
     blocks: {
-      subject: 'happy couple, travelers, excited lifestyle, vibrant energy',
-      layout: 'centered composition, dynamic and energetic, full visual impact',
-      style: '3D render, cartoon style, smooth shading, volumetric',
-      lighting: 'bright daylight, vibrant sunlit, energetic atmosphere',
-      color: 'vibrant coral and white, fresh tropical, energetic lifestyle palette',
-      quality: 'highly detailed, sharp focus, vivid colors, social media optimized',
+      subject: 'happy couple, travelers, airport departure hall, excited',
+      layout: 'centered symmetrical composition',
+      style: '3D render, glossy materials, depth of field, octane render, studio lighting',
+      lighting: 'high-key bright lighting, clean airy aesthetic, minimal shadows, lifestyle mood',
+      color: 'vibrant coral and white, energetic lifestyle, fresh tropical feel',
+      quality: 'professional quality, commercial grade',
     }
   },
   { id: 'product', name: '商品展示 App UI', desc: '乾淨、白底、聚焦產品',
     blocks: {
-      subject: 'premium product showcase, clean white background, hero shot',
-      layout: 'centered product, minimal surrounding space, clean margins',
-      style: 'product photography, ultra clean, minimal aesthetic',
-      lighting: 'even studio lighting, no harsh shadows, product-focused',
-      color: 'white and light grey, clean minimal palette',
-      quality: 'ultra sharp, perfect focus, commercial product quality',
+      subject: 'premium product showcase, hero shot, clean background',
+      layout: 'close-up product shot, macro detail',
+      style: 'minimalist product photography, clean white studio background, professional lighting',
+      lighting: 'professional studio lighting, softbox, clean even illumination, product-grade',
+      color: 'pure white and platinum silver, ultra clean minimal luxury',
+      quality: 'award-winning photography, editorial quality',
     }
   },
   { id: 'event', name: '活動主視覺 Event', desc: '大氣、強衝擊、活動感',
     blocks: {
       subject: 'dynamic crowd, celebration event, energetic atmosphere',
-      layout: 'dramatic full-bleed composition, bold visual hierarchy',
-      style: 'cinematic illustration, dramatic render, high impact',
-      lighting: 'dramatic stage lighting, spotlights, event atmosphere',
-      color: 'black and gold, premium event palette, high contrast',
-      quality: 'masterpiece, cinematic quality, event poster grade',
+      layout: 'dynamic diagonal composition',
+      style: 'cinematic film still, anamorphic lens, movie-quality render, 35mm film grain',
+      lighting: 'dramatic cinematic lighting, volumetric light rays, deep shadows, god rays',
+      color: 'monochromatic black and white with single gold accent, high contrast luxury',
+      quality: 'masterpiece, best quality, highly detailed, 8K resolution',
     }
   },
 ];
@@ -520,6 +605,30 @@ const USAGES = [
   { id: 'story',   name: '限時動態',      size: '1080×1920',icon: '▮', suffix: '--ar 9:16' },
   { id: 'appui',   name: 'App 介面',     size: '375×812',  icon: '▯', suffix: '--ar 9:19.5' },
 ];
+
+
+// ── Variant 中文標籤對應表 ────────────────────────────────
+const VARIANT_LABELS = {
+  subject: ['情侶旅客 / 機場', '商務精英 / 自信', '家庭度假 / 歡樂', '精品商品 / 主圖', '女性生活 / 人像'],
+  layout:  ['三分法構圖', '置中對稱', '左視覺右文案', '右視覺左文案', '斜角動感', '商品特寫'],
+  style:   [
+    '寫實攝影', '極簡產品棚拍', '奢品廣告攝影', '電影質感',
+    '扁平化插畫', '雜誌編輯插畫', '3D 渲染', '3D 黏土圖示',
+    '水彩畫', '動漫風格', '日系扁平海報', '普普藝術', '賽博龐克',
+  ],
+  lighting: [
+    '戲劇電影光', '自然光', '霓虹燈光', '黃金時刻',
+    '棚拍打光', '體積光 / 耶穌光', '柔和漫射光', '輪廓光', '高調明亮', '低調暗調',
+  ],
+  color: [
+    '深藍金融感', '黑白金點綴', '銀灰科技藍', '祖母綠香檳金',
+    '酒紅玫瑰金', '碳灰電藍', '純白鉑金',
+    '珊瑚活力白', '磚紅奶油', '鼠尾草米色', '天空藍陽光黃',
+    '海洋青砂米', '霧粉象牙', '森林綠干邑棕',
+    '電光青紫', '全息彩虹珠光', '琥珀靛藍', '彩虹馬卡龍',
+  ],
+  quality: ['最高品質 8K', '商業級', '得獎品質'],
+};
 
 const STRATEGIC_VARIANTS = [
   {
