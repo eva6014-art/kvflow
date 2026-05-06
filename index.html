@@ -377,6 +377,160 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); font
 
 /* scrollbar everywhere */
 * { scrollbar-width: thin; scrollbar-color: var(--border2) transparent; }
+
+/* ═══════════════════════════════════════════════ MOBILE RWD */
+@media (max-width: 768px) {
+
+  /* 整體結構 */
+  html, body { overflow: auto; height: auto; }
+  .app { height: 100dvh; height: 100vh; overflow: hidden; flex-direction: column; }
+
+  /* Topbar：精簡 */
+  .topbar {
+    height: auto; padding: 10px 14px; gap: 8px;
+    flex-wrap: wrap; position: sticky; top: 0; z-index: 200;
+  }
+  .topbar-brand { font-size: 10px; }
+  .topbar-divider { display: none; }
+  .project-name-input { font-size: 13px; font-weight: 600; min-width: 80px; max-width: 130px; }
+  .topbar-prompt-wrap { display: none; }  /* 手機不顯示 prompt 預覽列 */
+  .topbar-actions { gap: 5px; margin-left: auto; }
+  .topbar-actions .btn-ghost { display: none; } /* 隱藏 Variants 按鈕，改放在 Inspector */
+  .topbar-actions .btn-sm { font-size: 11px; padding: 5px 10px; }
+
+  /* 主體：單欄，上下切換 */
+  .main {
+    flex: 1;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* 隱藏左右面板，改用底部 Tab 控制 */
+  .left-panel  { display: none; }
+  .right-panel { display: none; }
+
+  /* Center panel 佔滿 */
+  .center-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .center-toolbar {
+    padding: 8px 14px;
+    gap: 6px;
+  }
+  .center-toolbar .panel-title { font-size: 11px; }
+  .center-toolbar .btn { font-size: 11px; padding: 5px 10px; }
+
+  .center-scroll { padding: 12px; padding-bottom: 80px; }
+
+  /* Block cards */
+  .block-card { margin-bottom: 10px; }
+  .block-head { padding: 9px 12px; }
+  .block-body { padding: 9px 12px; }
+  .block-value { font-size: 11px; }
+  .block-variants-row { gap: 5px; margin-top: 7px; }
+  .variant-pill { font-size: 10px; padding: 4px 9px; }
+
+  /* Step editor */
+  .step-editor { margin-bottom: 12px; }
+  .step-editor-body { padding: 12px; }
+  .input-field { font-size: 12px; }
+  .chip { font-size: 11px; padding: 5px 11px; }
+  .chip-row { gap: 6px; }
+
+  /* ── Mobile Slide Panel（左側 & 右側內容用 sheet 呈現）── */
+  .mobile-sheet {
+    position: fixed;
+    bottom: 56px; left: 0; right: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 -4px 24px rgba(0,0,0,.1);
+    z-index: 300;
+    max-height: 70vh;
+    overflow-y: auto;
+    transform: translateY(100%);
+    transition: transform .3s cubic-bezier(.32,0,.67,0);
+  }
+  .mobile-sheet.open {
+    transform: translateY(0);
+  }
+  .mobile-sheet-handle {
+    width: 36px; height: 4px; border-radius: 2px;
+    background: var(--border2); margin: 10px auto 6px; cursor: pointer;
+  }
+  .mobile-sheet-header {
+    padding: 4px 16px 12px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+  .mobile-sheet-title {
+    font-family: var(--mono); font-size: 11px; letter-spacing: .12em;
+    color: var(--text3); text-transform: uppercase;
+  }
+  .mobile-sheet-close {
+    font-size: 18px; color: var(--text3); cursor: pointer;
+    background: none; border: none; padding: 2px 6px;
+  }
+  .mobile-sheet-body { padding: 12px 16px 24px; }
+
+  /* ── 底部 Tab Bar ── */
+  .mobile-tabbar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 56px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    display: flex;
+    z-index: 400;
+    box-shadow: 0 -1px 8px rgba(0,0,0,.06);
+  }
+  .mobile-tab {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 2px; cursor: pointer;
+    font-size: 10px; color: var(--text3);
+    transition: color .15s; border: none; background: none;
+  }
+  .mobile-tab.active { color: var(--accent); }
+  .mobile-tab-icon { font-size: 18px; line-height: 1; }
+  .mobile-tab-label { font-size: 9px; letter-spacing: .04em; }
+
+  /* backdrop */
+  .mobile-backdrop {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.3);
+    z-index: 250;
+  }
+  .mobile-backdrop.show { display: block; }
+
+  /* Right panel content 在 sheet 裡的樣式調整 */
+  .mobile-sheet .right-tabs { display: none; }
+  .mobile-sheet .right-content { overflow: visible; }
+  .mobile-sheet .right-section { padding: 10px 0; }
+  .mobile-sheet .right-section:first-child { padding-top: 0; }
+  .mobile-sheet .prompt-preview { max-height: 120px; font-size: 11px; }
+  .mobile-sheet .variant-card { margin-bottom: 8px; }
+  .mobile-sheet .snapshot-item { padding: 8px 0; }
+
+  /* Steps list 在 sheet 裡 */
+  .mobile-sheet .step-item { padding: 11px 4px; }
+  .mobile-sheet .step-num { width: 20px; }
+  .mobile-sheet .usage-grid { grid-template-columns: repeat(4,1fr); gap: 6px; padding: 8px 0; }
+  .mobile-sheet .usage-card { padding: 8px 4px; }
+  .mobile-sheet .usage-card-icon { font-size: 14px; }
+  .mobile-sheet .usage-card-name { font-size: 10px; }
+  .mobile-sheet .usage-card-size { font-size: 9px; }
+
+  /* Score section */
+  .mobile-sheet .score-grid { gap: 8px; }
+}
 </style>
 </head>
 <body>
@@ -434,6 +588,61 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); font
 
   </div>
 </div>
+
+
+<!-- ── Mobile Sheet（左側步驟 / 右側 Inspector）── -->
+<div class="mobile-backdrop" id="mobile-backdrop" onclick="closeMobileSheet()"></div>
+
+<div class="mobile-sheet" id="mobile-sheet-steps">
+  <div class="mobile-sheet-handle" onclick="closeMobileSheet()"></div>
+  <div class="mobile-sheet-header">
+    <span class="mobile-sheet-title">工作步驟</span>
+    <button class="mobile-sheet-close" onclick="closeMobileSheet()">×</button>
+  </div>
+  <div class="mobile-sheet-body" id="mobile-steps-body"></div>
+</div>
+
+<div class="mobile-sheet" id="mobile-sheet-inspector">
+  <div class="mobile-sheet-handle" onclick="closeMobileSheet()"></div>
+  <div class="mobile-sheet-header">
+    <span class="mobile-sheet-title" id="mobile-inspector-title">預覽 / 評分 / 變體</span>
+    <button class="mobile-sheet-close" onclick="closeMobileSheet()">×</button>
+  </div>
+  <div class="mobile-sheet-body">
+    <!-- Tab bar inside sheet -->
+    <div style="display:flex;gap:0;border-bottom:1px solid var(--border);margin:-12px -16px 12px;">
+      <div style="flex:1;text-align:center;padding:9px 4px;font-size:11px;font-weight:500;cursor:pointer;border-bottom:2px solid var(--accent);color:var(--text);" onclick="switchMobileInspector('preview')" id="mi-tab-preview">預覽</div>
+      <div style="flex:1;text-align:center;padding:9px 4px;font-size:11px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;color:var(--text3);" onclick="switchMobileInspector('score')" id="mi-tab-score">評分</div>
+      <div style="flex:1;text-align:center;padding:9px 4px;font-size:11px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;color:var(--text3);" onclick="switchMobileInspector('variants')" id="mi-tab-variants">變體</div>
+      <div style="flex:1;text-align:center;padding:9px 4px;font-size:11px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;color:var(--text3);" onclick="switchMobileInspector('history')" id="mi-tab-history">歷史</div>
+    </div>
+    <div id="mobile-inspector-body"></div>
+  </div>
+</div>
+
+<!-- ── 底部 Tab Bar ── -->
+<nav class="mobile-tabbar" id="mobile-tabbar">
+  <button class="mobile-tab" onclick="openMobileSteps()">
+    <span class="mobile-tab-icon">☰</span>
+    <span class="mobile-tab-label">步驟</span>
+  </button>
+  <button class="mobile-tab active" id="mtab-canvas" onclick="closeMobileSheet()">
+    <span class="mobile-tab-icon">◫</span>
+    <span class="mobile-tab-label">畫布</span>
+  </button>
+  <button class="mobile-tab" onclick="openMobileInspector('variants')">
+    <span class="mobile-tab-icon">⚡</span>
+    <span class="mobile-tab-label">變體</span>
+  </button>
+  <button class="mobile-tab" onclick="openMobileInspector('preview')">
+    <span class="mobile-tab-icon">◉</span>
+    <span class="mobile-tab-label">預覽</span>
+  </button>
+  <button class="mobile-tab" onclick="openMobileInspector('history')">
+    <span class="mobile-tab-icon">◷</span>
+    <span class="mobile-tab-label">歷史</span>
+  </button>
+</nav>
 
 <div id="copy-toast">✓ Copied</div>
 
@@ -1313,10 +1522,227 @@ const BLOCK_ZH = {
   lighting: '光影', color: '色彩', quality: '品質詞',
 };
 
+
+// ═══════════════════════════════════════════════════════════════
+// MOBILE UI
+// ═══════════════════════════════════════════════════════════════
+const isMobile = () => window.innerWidth <= 768;
+
+let _mobileInspectorTab = 'preview';
+
+function openMobileSteps() {
+  if (!isMobile()) return;
+  // 把步驟列表 render 進 sheet
+  const body = document.getElementById('mobile-steps-body');
+  const stepsHtml = STEPS.map((s, i) => {
+    const block = STATE.blocks.find(b => b.id === s.id);
+    const filled = block ? block.enabled && block.value : (s.id === 'usage');
+    return `<div class="step-item ${STATE.activeStep === s.id ? 'active' : ''}"
+      onclick="setActiveStep('${s.id}'); closeMobileSheet();"
+      style="padding:13px 8px;">
+      <span class="step-num">${String(i+1).padStart(2,'0')}</span>
+      <span class="step-label" style="font-size:14px;">${s.label}</span>
+      <span class="step-status ${filled ? 'filled' : ''}"></span>
+    </div>`;
+  }).join('');
+
+  const usageHtml = `
+    <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">
+      <div class="panel-title" style="margin-bottom:10px;">用途模式</div>
+      <div class="usage-grid" style="grid-template-columns:repeat(4,1fr);gap:6px;padding:0;">
+        ${USAGES.map(u => `
+          <div class="usage-card ${STATE.usageMode === u.id ? 'selected' : ''}"
+            onclick="setUsage('${u.id}'); closeMobileSheet();">
+            <div class="usage-card-icon">${u.icon}</div>
+            <div class="usage-card-name">${u.name}</div>
+            <div class="usage-card-size">${u.size}</div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+
+  body.innerHTML = stepsHtml + usageHtml;
+  openSheet('mobile-sheet-steps');
+}
+
+function openMobileInspector(tab) {
+  if (!isMobile()) return;
+  _mobileInspectorTab = tab || _mobileInspectorTab;
+  renderMobileInspector();
+  openSheet('mobile-sheet-inspector');
+}
+
+function switchMobileInspector(tab) {
+  _mobileInspectorTab = tab;
+  // update tab styles
+  ['preview','score','variants','history'].forEach(t => {
+    const el = document.getElementById('mi-tab-' + t);
+    if (!el) return;
+    if (t === tab) {
+      el.style.borderBottomColor = 'var(--accent)';
+      el.style.color = 'var(--text)';
+    } else {
+      el.style.borderBottomColor = 'transparent';
+      el.style.color = 'var(--text3)';
+    }
+  });
+  renderMobileInspector();
+}
+
+function renderMobileInspector() {
+  // 先 sync STATE.rightTab 讓 renderRight 的邏輯可以複用
+  const prevTab = STATE.rightTab;
+  STATE.rightTab = _mobileInspectorTab;
+
+  // 暫時把 right-content 指向 mobile body
+  const realEl = document.getElementById('right-content');
+  const mobileEl = document.getElementById('mobile-inspector-body');
+  if (!mobileEl) return;
+
+  // 生成 HTML（借用 renderRight 的字串生成邏輯）
+  const prompt = getPrompt();
+  const tab = _mobileInspectorTab;
+  let html = '';
+
+  if (tab === 'preview') {
+    html = `
+      <div class="right-section" style="border:none;padding:0;">
+        <div class="right-section-title" style="margin-bottom:8px;">Prompt 預覽</div>
+        <div class="prompt-preview ${prompt ? '' : 'empty'}" style="max-height:140px;">${prompt || '尚未填入內容...'}</div>
+        <div class="char-count">${prompt.length} 字元 · ${prompt.split(',').filter(Boolean).length} 段落</div>
+        <div style="margin-top:10px;display:flex;gap:6px;">
+          <button class="btn btn-primary btn-sm" style="flex:1;" onclick="copyPrompt()">複製 Prompt</button>
+          <button class="btn btn-sm" onclick="saveSnapshot()">儲存</button>
+        </div>
+      </div>
+      <div class="right-section" style="padding-top:14px;border-top:1px solid var(--border);margin-top:14px;">
+        <div class="right-section-title" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+          <span>中文對照翻譯</span>
+          <button class="btn btn-ghost btn-sm" id="translate-btn-m" onclick="translatePromptMobile()" style="font-size:10px;padding:3px 8px;"
+            ${localStorage.getItem('gemini_api_key') ? '' : 'disabled'}>翻譯</button>
+        </div>
+        <div id="zh-preview-m" class="prompt-preview empty" style="min-height:60px;font-family:var(--sans);line-height:1.7;">
+          ${localStorage.getItem('gemini_api_key') ? '點擊「翻譯」產生逐段中文對照' : '⚠ 請先設定 Gemini API Key'}
+        </div>
+      </div>`;
+  } else if (tab === 'score') {
+    const scores = scorePrompt(prompt);
+    const labels = { commercial:'商業可用性', typography:'文案空間', layout:'構圖明確', consistency:'風格一致性', richness:'Prompt 豐富度' };
+    html = `
+      <div style="margin-bottom:14px;">
+        <div style="font-size:26px;font-weight:600;font-family:var(--mono);">${scores._total}<span style="font-size:13px;color:var(--text3);">/100</span></div>
+        <div class="score-bar" style="margin-top:6px;">
+          <div class="score-fill" style="width:${scores._total}%;background:${scores._total>=70?'var(--green)':scores._total>=40?'var(--amber)':'var(--red)'};"></div>
+        </div>
+      </div>
+      <div class="score-grid">
+        ${Object.entries(labels).map(([k,label]) => `
+          <div class="score-row">
+            <span class="score-label">${label}</span>
+            <span class="score-badge score-${scores[k]||'na'}">${scores[k]==='good'?'GOOD':scores[k]==='warn'?'WARN':scores[k]==='bad'?'LOW':'—'}</span>
+          </div>`).join('')}
+      </div>`;
+  } else if (tab === 'variants') {
+    const variantsHtml = STATE.generatedVariants.length === 0
+      ? `<div class="empty-state" style="padding:16px 0;">點擊下方按鈕產出策略變體</div>`
+      : STATE.generatedVariants.map((v,i) => `
+          <div class="variant-card ${STATE.activeVariantIdx===i?'active-variant':''}" onclick="applyVariant(${i});closeMobileSheet();">
+            <div class="variant-card-head">
+              <span class="variant-tag" style="background:${v.tagBg};color:${v.tagText};">${v.tag}</span>
+              <span class="variant-name">${v.name}</span>
+            </div>
+            <div class="variant-desc">${v.desc}</div>
+            <div class="variant-prompt-snippet">${v.prompt}</div>
+          </div>`).join('');
+    html = `
+      <button class="btn btn-sm" style="width:100%;margin-bottom:12px;" onclick="doVariants();renderMobileInspector();">⚡ 產生策略變體</button>
+      ${variantsHtml}`;
+  } else if (tab === 'history') {
+    const snaps = STATE.snapshots;
+    html = snaps.length === 0
+      ? `<div class="empty-state" style="padding:16px 0;">尚無快照<br>按「儲存」保留版本</div>`
+      : snaps.map((s,i) => `
+          <div class="snapshot-item" style="padding:10px 0;">
+            <div class="snapshot-main" onclick="loadSnapshot(${i});closeMobileSheet();">
+              <div class="snapshot-time">${new Date(s.createdAt).toLocaleString('zh-TW')}</div>
+              <div class="snapshot-preview">${s.prompt}</div>
+            </div>
+            <div class="snapshot-del" onclick="deleteSnapshot(${i});renderMobileInspector();">×</div>
+          </div>`).join('');
+  }
+
+  mobileEl.innerHTML = html;
+  STATE.rightTab = prevTab;
+}
+
+async function translatePromptMobile() {
+  const p = getPrompt();
+  const apiKey = localStorage.getItem('gemini_api_key');
+  if (!p || !apiKey) return;
+  const btn = document.getElementById('translate-btn-m');
+  const preview = document.getElementById('zh-preview-m');
+  if (!btn || !preview) return;
+  btn.textContent = '翻譯中...'; btn.disabled = true;
+  preview.textContent = '翻譯中，請稍候...';
+  try {
+    const sysPrompt = '你是 AI 繪圖提示詞的中文對照解說員。將英文 Prompt 每個逗號分隔的片段翻譯為「英文片段 → 中文說明」格式，技術參數保留不翻譯，只輸出對照表。';
+    const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + apiKey, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ contents:[{ parts:[{ text: sysPrompt+'\n\n'+p }] }] })
+    });
+    const json = await res.json();
+    const result = json?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+    if (result) {
+      const lines = result.split('\n').filter(l=>l.trim());
+      preview.innerHTML = lines.map(line => {
+        const parts = line.split('→');
+        return parts.length===2
+          ? `<div style="display:flex;gap:6px;margin-bottom:5px;line-height:1.5;">
+              <span style="color:var(--text3);flex:1;font-size:10px;">${esc(parts[0].trim())}</span>
+              <span style="color:var(--blue);font-size:10px;opacity:.5;">→</span>
+              <span style="flex:1;color:var(--text);font-size:11px;">${esc(parts[1].trim())}</span>
+            </div>`
+          : `<div style="font-size:11px;margin-bottom:4px;">${esc(line)}</div>`;
+      }).join('');
+      preview.classList.remove('empty');
+      STATE._lastTranslation = result;
+    }
+  } catch(e) { preview.textContent = '翻譯失敗'; }
+  finally { btn.textContent = '重新翻譯'; btn.disabled = false; }
+}
+
+function openSheet(id) {
+  document.querySelectorAll('.mobile-sheet').forEach(s => s.classList.remove('open'));
+  document.getElementById(id)?.classList.add('open');
+  document.getElementById('mobile-backdrop')?.classList.add('show');
+  // 更新底部 tab 高亮
+  document.querySelectorAll('.mobile-tab').forEach(t => t.classList.remove('active'));
+}
+
+function closeMobileSheet() {
+  document.querySelectorAll('.mobile-sheet').forEach(s => s.classList.remove('open'));
+  document.getElementById('mobile-backdrop')?.classList.remove('show');
+  document.getElementById('mtab-canvas')?.classList.add('active');
+}
+
+// 讓 render 在手機時也更新 mobile inspector（如果已開啟）
+const _origRender = render;
+
 // ═══════════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════════
 render();
+
+// Mobile tabbar：只在手機顯示
+(function() {
+  const bar = document.getElementById('mobile-tabbar');
+  if (!bar) return;
+  if (window.innerWidth > 768) {
+    bar.style.display = 'none';
+  }
+  window.addEventListener('resize', () => {
+    bar.style.display = window.innerWidth <= 768 ? 'flex' : 'none';
+  });
+})();
 </script>
 </body>
 </html>
