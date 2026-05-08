@@ -375,6 +375,25 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); font
   margin-bottom: 8px; background: var(--surface2);
 }
 
+
+/* ── Style Grid ── */
+.sg-toggle {
+  font-size: 11px; padding: 4px 10px; border-radius: 4px;
+  border: 1px solid #d1d5db; background: #f8fafc; color: #64748b;
+  cursor: pointer; transition: all .15s; white-space: nowrap;
+  font-family: inherit; margin-left: 6px;
+}
+.sg-toggle:hover { border-color: #818cf8; color: #4338ca; }
+.sg-toggle.open { background: #1e293b; border-color: #1e293b; color: #fff; }
+.sg-wrap { display: none; margin-top: 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; }
+.sg-wrap.open { display: block; }
+.sg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
+.sg-item { cursor: pointer; border-radius: 6px; overflow: hidden; border: 2px solid transparent; transition: all .15s; background: #e2e8f0; }
+.sg-item:hover { border-color: #6366f1; transform: translateY(-1px); box-shadow: 0 3px 8px rgba(0,0,0,.12); }
+.sg-item.sg-active { border-color: #1e293b; box-shadow: 0 0 0 1px #1e293b; }
+.sg-item img { width: 100%; height: 68px; object-fit: cover; display: block; }
+.sg-item-label { font-size: 9.5px; font-weight: 500; padding: 4px 5px; line-height: 1.3; color: #374151; background: #fff; text-align: center; }
+.sg-note { font-size: 10px; color: #94a3b8; margin-top: 6px; text-align: right; }
 /* scrollbar everywhere */
 * { scrollbar-width: thin; scrollbar-color: var(--border2) transparent; }
 
@@ -1749,5 +1768,63 @@ render();
   });
 })();
 </script>
+
+<script>
+(function(){
+  var KF_STYLES = [["photorealistic, ultra-detailed photography", "寫實攝影", "https://source.unsplash.com/180x120/?cinematic,portrait,photography&sig=13"], ["minimalist product photography", "極簡產品棚拍", "https://source.unsplash.com/180x120/?minimalist,product,white,studio&sig=20"], ["luxury brand campaign photography", "奢品廣告攝影", "https://source.unsplash.com/180x120/?luxury,fashion,editorial&sig=27"], ["cinematic film still", "電影質感", "https://source.unsplash.com/180x120/?cinematic,film,moody&sig=34"], ["Japanese anime illustration style", "動漫風格", "https://source.unsplash.com/180x120/?anime,illustration,colorful&sig=41"], ["Japanese shoujo manga style", "日本少女漫畫", "https://source.unsplash.com/180x120/?pastel,manga,illustration&sig=48"], ["Japanese shounen manga style", "日本少年漫畫", "https://source.unsplash.com/180x120/?manga,action,dynamic&sig=55"], ["black and white shoujo manga", "黑白少女漫畫", "https://source.unsplash.com/180x120/?black,white,ink,illustration&sig=62"], ["black and white shounen manga", "黑白少年漫畫", "https://source.unsplash.com/180x120/?comic,speed,lines,black,white&sig=69"], ["flat vector illustration", "扁平化插畫", "https://source.unsplash.com/180x120/?flat,vector,geometric,illustration&sig=76"], ["Japanese flat poster art style", "日系扁平海報", "https://source.unsplash.com/180x120/?retro,japanese,travel,poster&sig=83"], ["flat infographic illustration", "扁平資訊圖表", "https://source.unsplash.com/180x120/?infographic,isometric,illustration&sig=90"], ["editorial illustration, magazine style", "雜誌編輯插畫", "https://source.unsplash.com/180x120/?editorial,magazine,illustration&sig=97"], ["flat vector logo design", "扁平商標設計", "https://source.unsplash.com/180x120/?minimalist,logo,flat,design&sig=104"], ["corporate Memphis style", "企業孟菲斯風格", "https://source.unsplash.com/180x120/?memphis,geometric,colorful&sig=111"], ["Japanese editorial illustration, flat vector style", "日本編輯插畫海報", "https://source.unsplash.com/180x120/?mid,century,japanese,illustration&sig=118"], ["naive art style, bold primary colors", "日本活潑海報插畫", "https://source.unsplash.com/180x120/?risograph,naive,illustration,poster&sig=125"], ["Taiwan old street scene", "台灣老街城市插畫", "https://source.unsplash.com/180x120/?city,street,hand,drawn,illustration&sig=132"], ["isometric editorial illustration", "等角城市插畫", "https://source.unsplash.com/180x120/?isometric,city,geometric&sig=139"], ["3D render, glossy materials", "3D 渲染", "https://source.unsplash.com/180x120/?3d,render,glossy,product&sig=146"], ["3D clay icon style", "3D 黏土圖示", "https://source.unsplash.com/180x120/?clay,3d,render,cute&sig=153"], ["cyberpunk aesthetic, neon lights", "賽博龐克", "https://source.unsplash.com/180x120/?cyberpunk,neon,city,night&sig=160"], ["watercolor painting, soft washes", "水彩畫", "https://source.unsplash.com/180x120/?watercolor,painting,soft&sig=167"], ["oil painting, thick impasto", "油畫", "https://source.unsplash.com/180x120/?oil,painting,impasto,texture&sig=174"], ["pop art style, bold outlines", "普普藝術", "https://source.unsplash.com/180x120/?pop,art,halftone,bold,colors&sig=181"]];
+
+  function buildKfGrid(block) {
+    if(!block||block.id!=='style') return '';
+    var html='<div style="margin-top:10px;">';
+    html+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">';
+    html+='<span class="field-label" style="margin:0;">風格視覺參考</span>';
+    html+='<button type="button" class="sg-toggle btn btn-ghost btn-sm" id="sg-kf-toggle" onclick="kfToggleGrid()">▼ 展開預覽</button>';
+    html+='</div>';
+    html+='<div class="sg-wrap" id="sg-kf-grid"><div class="sg-grid">';
+    KF_STYLES.forEach(function(s,i){
+      var kw=s[0],label=s[1],img=s[2];
+      var active=block.value&&block.value.includes(kw);
+      html+='<div class="sg-item'+(active?' sg-active':'')+'" data-kw="'+kw+'" onclick="kfPickStyle(this)">';
+      html+='<img src="'+img+'" alt="'+label+'" loading="lazy" onerror="this.style.height='0'">';
+      html+='<div class="sg-item-label">'+label+'</div></div>';
+    });
+    html+='</div><div class="sg-note">點選圖片套用 · Unsplash 提供</div></div></div>';
+    return html;
+  }
+
+  window.kfToggleGrid=function(){
+    var g=document.getElementById('sg-kf-grid');
+    var t=document.getElementById('sg-kf-toggle');
+    if(!g||!t)return;
+    var open=g.classList.toggle('open');
+    t.classList.toggle('open',open);
+    t.textContent=open?'▲ 收起':'▼ 展開預覽';
+  };
+
+  window.kfPickStyle=function(el){
+    var kw=el.dataset.kw;
+    var styleBlock=STATE.blocks.find(function(b){return b.id==='style';});
+    if(!styleBlock)return;
+    var idx=styleBlock.variants.findIndex(function(v){return v.includes(kw);});
+    if(idx>=0) applyBlockVariant('style',idx);
+    document.querySelectorAll('#sg-kf-grid .sg-item').forEach(function(e){e.classList.remove('sg-active');});
+    el.classList.add('sg-active');
+  };
+
+  var _origRC=window.renderCanvas;
+  window.renderCanvas=function(){
+    _origRC();
+    if(STATE.activeStep==='style'){
+      setTimeout(function(){
+        if(document.getElementById('sg-kf-toggle')) return;
+        var styleBlock=STATE.blocks.find(function(b){return b.id==='style';});
+        var body=document.querySelector('.step-editor .step-editor-body');
+        if(body&&styleBlock) body.insertAdjacentHTML('beforeend',buildKfGrid(styleBlock));
+      },30);
+    }
+  };
+})();
+</script>
+
 </body>
 </html>
