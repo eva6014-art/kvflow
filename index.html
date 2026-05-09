@@ -692,6 +692,7 @@ const STATE = {
   usageMode: 'banner',
   activeVariantIdx: null,
   arSuffix: '--ar 16:9',
+  arEnabled: true,
   sgOpen: false,
   snapshots: JSON.parse(localStorage.getItem('wb_snapshots') || '[]'),
   generatedVariants: [],
@@ -932,7 +933,7 @@ function composePrompt(blocks, overrides = {}) {
     .map(b => overrides[b.id] || b.value)
     .filter(Boolean);
   const prompt = parts.join(', ');
-  const suffix = STATE.arSuffix || '';
+  const suffix = STATE.arEnabled && STATE.arSuffix ? STATE.arSuffix : '';
   return suffix ? prompt + ' ' + suffix : prompt;
 }
 
@@ -1085,7 +1086,7 @@ function renderCanvas() {
                 oninput="updateBlockValue('${block.id}', this.value)"
               >${block.value}</textarea>
             </div>
-${block.id === 'subject' ? `<div class='field-group'><label class='field-label'>畫面比例</label><div class='ratio-chips'><button class='ratio-chip ${STATE.arSuffix==="--ar 16:9"?"rc-on":""}' onclick='setRatio("--ar 16:9")'>16:9</button><button class='ratio-chip ${STATE.arSuffix==="--ar 16:5"?"rc-on":""}' onclick='setRatio("--ar 16:5")'>1920×600</button><button class='ratio-chip ${STATE.arSuffix==="--ar 1:1"?"rc-on":""}' onclick='setRatio("--ar 1:1")'>1:1</button><button class='ratio-chip ${STATE.arSuffix==="--ar 9:16"?"rc-on":""}' onclick='setRatio("--ar 9:16")'>9:16</button><button class='ratio-chip ${STATE.arSuffix==="--ar 3:2"?"rc-on":""}' onclick='setRatio("--ar 3:2")'>3:2 KV</button></div></div>` : ''}
+${block.id === 'subject' ? `<div class='field-group'><div style='display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;'><label class='field-label' style='margin:0;'>畫面比例</label><div class='toggle-wrap'><div class='toggle ${STATE.arEnabled ? "on" : ""}' onclick='toggleAr()'></div><span style='font-size:11px;color:var(--text3);'>${STATE.arEnabled ? "On" : "Off"}</span></div></div><div class='ratio-chips' style='${STATE.arEnabled ? "" : "opacity:.35;pointer-events:none;"}'><button class='ratio-chip ${STATE.arSuffix==="--ar 16:9"?"rc-on":""}' onclick='setRatio("--ar 16:9")'>16:9</button><button class='ratio-chip ${STATE.arSuffix==="--ar 16:5"?"rc-on":""}' onclick='setRatio("--ar 16:5")'>1920×600</button><button class='ratio-chip ${STATE.arSuffix==="--ar 1:1"?"rc-on":""}' onclick='setRatio("--ar 1:1")'>1:1</button><button class='ratio-chip ${STATE.arSuffix==="--ar 9:16"?"rc-on":""}' onclick='setRatio("--ar 9:16")'>9:16</button><button class='ratio-chip ${STATE.arSuffix==="--ar 3:2"?"rc-on":""}' onclick='setRatio("--ar 3:2")'>3:2 KV</button></div></div>` : ''}
                         ${block.id !== 'subject' ? `<div class="field-group">
               <label class="field-label">快速變體 — 點選套用</label>
               <div class="chip-row">
@@ -1792,6 +1793,12 @@ render();
 
 function setRatio(ar) {
   STATE.arSuffix = ar;
+  updateTopbar();
+  renderRight();
+  renderCanvas();
+}
+function toggleAr() {
+  STATE.arEnabled = !STATE.arEnabled;
   updateTopbar();
   renderRight();
   renderCanvas();
