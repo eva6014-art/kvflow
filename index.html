@@ -1266,6 +1266,7 @@ function render() {
   renderCanvas();
   renderRight();
   updateTopbar();
+  setTimeout(syncSgHighlight, 50);
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -1304,6 +1305,15 @@ function applyBlockVariant(id, idx) {
     b.value = b.variants[idx];
     render();
   }
+}
+function syncSgHighlight() {
+  var block = STATE.blocks.find(function(b) { return b.id === 'style'; });
+  if (!block) return;
+  document.querySelectorAll('.sg-thumb-item').forEach(function(el) {
+    var kw = el.dataset.kw;
+    var idx = KF_KW_MAP[kw];
+    el.classList.toggle('sg-on', idx === block.activeVariant);
+  });
 }
 
 function applyTemplate(id) {
@@ -1822,25 +1832,26 @@ var KF_KW_MAP = {
   'flat infographic illustration': 11,
   'editorial illustration, magazine style': 12,
   'flat vector logo design': 13,
-  'corporate Memphis style': 14,
-  'Japanese editorial illustration, flat vector style': 15,
-  'naive art style, bold primary colors': 16,
-  'Taiwan old street scene': 17,
-  'isometric editorial illustration': 18,
-  '3D render, glossy materials': 19,
-  '3D clay icon style': 20,
-  'cyberpunk aesthetic, neon lights': 21,
-  'watercolor painting, soft washes': 22,
-  'oil painting, thick impasto': 23,
-  'pop art style, bold outlines': 24,
+  'corporate Memphis style': 20,
+  'Japanese editorial illustration, flat vector style': 21,
+  'naive art style, bold primary colors': 22,
+  'Taiwan old street scene': 23,
+  'isometric editorial illustration': 26,
+  '3D render, glossy materials': 14,
+  '3D clay icon style': 15,
+  'cyberpunk aesthetic, neon lights': 16,
+  'watercolor painting, soft washes': 17,
+  'oil painting, thick impasto': 18,
+  'pop art style, bold outlines': 19,
   'Korean flat business illustration, Korean financial advertising cartoon style': 25,
-  'Japanese infographic illustration, Japanese lifestyle editorial illustration': 26,
+  'Japanese infographic illustration, Japanese lifestyle editorial illustration': 24,
 };
 function kfPick(el) {
   var kw = el.dataset.kw;
   var idx = KF_KW_MAP[kw];
   if (idx === undefined) return;
   applyBlockVariant('style', idx);
+  setTimeout(syncSgHighlight, 50);
 }
 
 </script>
