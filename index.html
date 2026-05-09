@@ -1807,12 +1807,40 @@ function kfToggle() {
   STATE.sgOpen = !STATE.sgOpen;
   renderCanvas();
 }
+var KF_KW_MAP = {
+  'photorealistic, ultra-detailed photography': 0,
+  'minimalist product photography': 1,
+  'luxury brand campaign photography': 2,
+  'cinematic film still': 3,
+  'Japanese anime illustration style': 4,
+  'Japanese shoujo manga style': 5,
+  'Japanese shounen manga style': 6,
+  'black and white shoujo manga': 7,
+  'black and white shounen manga': 8,
+  'flat vector illustration': 9,
+  'Japanese flat poster art style': 10,
+  'flat infographic illustration': 11,
+  'editorial illustration, magazine style': 12,
+  'flat vector logo design': 13,
+  'corporate Memphis style': 14,
+  'Japanese editorial illustration, flat vector style': 15,
+  'naive art style, bold primary colors': 16,
+  'Taiwan old street scene': 17,
+  'isometric editorial illustration': 18,
+  '3D render, glossy materials': 19,
+  '3D clay icon style': 20,
+  'cyberpunk aesthetic, neon lights': 21,
+  'watercolor painting, soft washes': 22,
+  'oil painting, thick impasto': 23,
+  'pop art style, bold outlines': 24,
+  'Korean flat business illustration, Korean financial advertising cartoon style': 25,
+  'Japanese infographic illustration, Japanese lifestyle editorial illustration': 26,
+};
 function kfPick(el) {
   var kw = el.dataset.kw;
-  var block = STATE.blocks.find(function(b) { return b.id === 'style'; });
-  if (!block) return;
-  var idx = block.variants.findIndex(function(v) { return v.indexOf(kw) !== -1; });
-  if (idx >= 0) applyBlockVariant('style', idx);
+  var idx = KF_KW_MAP[kw];
+  if (idx === undefined) return;
+  applyBlockVariant('style', idx);
 }
 
 </script>
