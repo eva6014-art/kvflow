@@ -377,18 +377,18 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); font
 
 
 /* ── Style Grid ── */
-.sg-btn { font-size:11px; padding:4px 10px; border-radius:4px; border:1px solid #d1d5db; background:#f8fafc; color:#64748b; cursor:pointer; transition:all .15s; white-space:nowrap; font-family:inherit; }
-.sg-btn:hover { border-color:#818cf8; color:#4338ca; }
-.sg-btn.open { background:#1e293b; border-color:#1e293b; color:#fff; }
-.sg-wrap { display:none; margin-top:8px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:10px; }
-.sg-wrap.open { display:block; }
-.sg-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(90px,1fr)); gap:6px; }
-.sg-item { cursor:pointer; border-radius:6px; overflow:hidden; border:2px solid transparent; transition:all .15s; }
-.sg-item:hover { border-color:#6366f1; transform:translateY(-1px); box-shadow:0 3px 8px rgba(0,0,0,.12); }
-.sg-item.sg-on { border-color:#1e293b; box-shadow:0 0 0 1px #1e293b; }
-.sg-item img { width:100%; height:64px; object-fit:cover; display:block; }
-.sg-item-label { font-size:9px; font-weight:500; padding:3px 4px; color:#374151; background:#fff; text-align:center; line-height:1.3; }
-.sg-note { font-size:10px; color:#94a3b8; margin-top:6px; text-align:right; }
+.sg-btn{font-size:11px;padding:4px 10px;border-radius:4px;border:1px solid #d1d5db;background:#f8fafc;color:#64748b;cursor:pointer;transition:all .15s;white-space:nowrap;font-family:inherit;}
+.sg-btn:hover{border-color:#818cf8;color:#4338ca;}
+.sg-btn.open{background:#1e293b;border-color:#1e293b;color:#fff;}
+.sg-wrap{display:none;margin-top:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px;}
+.sg-wrap.open{display:block;}
+.sg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:6px;}
+.sg-item{cursor:pointer;border-radius:6px;overflow:hidden;border:2px solid transparent;transition:all .15s;}
+.sg-item:hover{border-color:#6366f1;transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,0,0,.12);}
+.sg-item.sg-on{border-color:#1e293b;box-shadow:0 0 0 1px #1e293b;}
+.sg-item img{width:100%;height:64px;object-fit:cover;display:block;}
+.sg-item-label{font-size:9px;font-weight:500;padding:3px 4px;color:#374151;background:#fff;text-align:center;line-height:1.3;}
+.sg-note{font-size:10px;color:#94a3b8;margin-top:6px;text-align:right;}
 
 /* scrollbar everywhere */
 * { scrollbar-width: thin; scrollbar-color: var(--border2) transparent; }
@@ -1766,67 +1766,61 @@ render();
 </script>
 <script>
 (function(){
-  var URLS = ["https://github.com/user-attachments/assets/a33aca43-f46a-4dc4-8c94-a50a3d33dd3d","https://github.com/user-attachments/assets/e881c5f9-8765-4fac-97fb-19121dd91da1","https://github.com/user-attachments/assets/5bd45758-ea59-4df0-92c8-8041e6621c39","https://github.com/user-attachments/assets/60833c2d-fd83-4efc-9f5f-5856c7ecd091","https://github.com/user-attachments/assets/f0c01c60-0a36-4621-ad13-9c90dec16795","https://github.com/user-attachments/assets/db63f84d-a96b-4faa-b33b-41f26e261b64","https://github.com/user-attachments/assets/185e348c-1233-45ee-8c3b-e3b42c43ed6f","https://github.com/user-attachments/assets/157d9340-c9bd-4e13-9e64-5edda0f2ca57","https://github.com/user-attachments/assets/359d6442-6775-4659-80c0-5cd39f135a17","https://github.com/user-attachments/assets/eab019d8-8a93-4d29-b68b-3082780b209f","https://github.com/user-attachments/assets/d7ccc21a-54a5-4ad8-8aae-094be3052c86","https://github.com/user-attachments/assets/7e8f6d5d-f1b7-4b93-9769-ec83a7368490","https://github.com/user-attachments/assets/b5ab6e4a-8852-463e-a374-e5c644de7d41","https://github.com/user-attachments/assets/8231b861-b2ea-43a1-8786-2baa946ccd91","https://github.com/user-attachments/assets/f86bedcd-a1ca-4cef-b181-d65f8f3571de","https://github.com/user-attachments/assets/7e31cb03-2bae-478d-9ef3-8960f09ff0a7","https://github.com/user-attachments/assets/0d19f87b-0d0f-4249-9e30-464c1be11259","https://github.com/user-attachments/assets/1b561b42-b3e6-44e4-a18f-0c9e7d838e02","https://github.com/user-attachments/assets/6d507f04-d2be-43de-8670-1b26725c4f04","https://github.com/user-attachments/assets/b1979385-4912-4ff2-ba0a-64d4e75a9a66","https://github.com/user-attachments/assets/152048a7-7ed4-48dd-b638-4fa1c11f667d","https://github.com/user-attachments/assets/2967c148-baf7-4da3-81bf-42ecb46a5d6a","https://github.com/user-attachments/assets/e40cbb87-df09-4d75-a4c6-60fdceb22ae5","https://github.com/user-attachments/assets/c0a9d164-0481-4497-b8e7-5360a8f21bf3","https://github.com/user-attachments/assets/146c25f1-e325-4287-8f72-b9d302b9d58c"];
-  var LABELS = ["寫實攝影","極簡產品棚拍","奢品廣告攝影","電影質感","動漫風格","日本少女漫畫","日本少年漫畫","黑白少女漫畫","黑白少年漫畫","扁平化插畫","日系扁平海報","扁平資訊圖表","雜誌編輯插畫","扁平商標設計","企業孟菲斯風格","日本編輯插畫海報","日本活潑海報插畫","台灣老街城市插畫","等角城市插畫","3D 渲染","3D 黏土圖示","賽博龐克","水彩畫","油畫","普普藝術"];
-  var KWS = ["photorealistic, ultra-detailed photography","minimalist product photography","luxury brand campaign photography","cinematic film still","Japanese anime illustration style","Japanese shoujo manga style","Japanese shounen manga style","black and white shoujo manga","black and white shounen manga","flat vector illustration","Japanese flat poster art style","flat infographic illustration","editorial illustration, magazine style","flat vector logo design","corporate Memphis style","Japanese editorial illustration, flat vector style","naive art style, bold primary colors","Taiwan old street scene","isometric editorial illustration","3D render, glossy materials","3D clay icon style","cyberpunk aesthetic, neon lights","watercolor painting, soft washes","oil painting, thick impasto","pop art style, bold outlines"];
-
-  function buildGrid(block){
-    if(!block || block.id !== 'style') return '';
-    var html = '<div style="margin-top:12px;">';
-    html += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">';
-    html += '<span class="field-label" style="margin:0;">風格視覺參考</span>';
-    html += '<button type="button" class="btn btn-ghost btn-sm sg-btn" id="sg-btn-kf" onclick="kfToggle()">▼ 展開預覽</button>';
-    html += '</div><div class="sg-wrap" id="sg-grid-kf"><div class="sg-grid">';
-    KWS.forEach(function(kw, i){
-      var active = block.value && block.value.indexOf(kw) !== -1;
-      html += '<div class="sg-item' + (active ? ' sg-on' : '') + '" data-kw="' + kw + '" onclick="kfPick(this)">';
-      html += '<img src="' + URLS[i] + '" alt="' + LABELS[i] + '" loading="lazy">';
-      html += '<div class="sg-item-label">' + LABELS[i] + '</div></div>';
+  var URLS=["https://github.com/user-attachments/assets/f2640e9c-4672-4c99-b6df-3e96fd9aa667","https://github.com/user-attachments/assets/b8e6c866-bda5-4b1a-981f-1388a5b4d175","https://github.com/user-attachments/assets/254e9b30-a944-47a1-a7f0-98eab8cac0d6","https://github.com/user-attachments/assets/35bedadd-47f9-40bb-b270-994c9ca027ad","https://github.com/user-attachments/assets/8429c9f4-744e-4117-860e-67ec5eb88a63","https://github.com/user-attachments/assets/0c1f6d0a-756b-4098-be15-4d046df05ab8","https://github.com/user-attachments/assets/2f2160d1-42bb-43bd-947c-59b14a82f87b","https://github.com/user-attachments/assets/c7764b5b-2e1a-4761-8099-451617928183","https://github.com/user-attachments/assets/df505f44-b98e-43b3-80b7-65f080d3f99c","https://github.com/user-attachments/assets/0439d7e4-00ee-4586-b931-fd15ac3610cf","https://github.com/user-attachments/assets/83cff9f7-e654-4f51-8252-754b9d0665d3","https://github.com/user-attachments/assets/5b88693c-966d-4692-8e84-b2c301eed685","https://github.com/user-attachments/assets/e6d6d696-ccd9-4945-ac3e-bcd1bdc42f5f","https://github.com/user-attachments/assets/3a610d6d-f72a-42d9-9913-a7bad8a8e63f","https://github.com/user-attachments/assets/f867062f-9bed-4c49-bc71-ea8ddf89065a","https://github.com/user-attachments/assets/25bb1fae-06f2-4f83-bed0-3027deca8d23","https://github.com/user-attachments/assets/06595399-e743-4904-947c-bde733b97060","https://github.com/user-attachments/assets/60468818-6ee5-40c5-8160-ede35ea11955","https://github.com/user-attachments/assets/a2c6bc3f-81ab-4887-93e4-b441d0aeab35","https://github.com/user-attachments/assets/5bfa218b-bb60-40c0-8a17-104c82de0884","https://github.com/user-attachments/assets/5e584a4c-8027-456a-b410-1fced2a7ed81","https://github.com/user-attachments/assets/f7b0bea4-2dd7-4379-8bb9-5407043ddbf9","https://github.com/user-attachments/assets/330b2c3e-75d9-42ca-9ae7-bd466770bc50","https://github.com/user-attachments/assets/1ad87b4d-5e2e-46ed-9bf4-a7722275632b","https://github.com/user-attachments/assets/c93509ee-b003-4da4-93a9-c4712318ae50"];
+  var LABELS=["寫實攝影","極簡產品棚拍","奢品廣告攝影","電影質感","動漫風格","日本少女漫畫","日本少年漫畫","黑白少女漫畫","黑白少年漫畫","扁平化插畫","日系扁平海報","扁平資訊圖表","雜誌編輯插畫","扁平商標設計","企業孟菲斯風格","日本編輯插畫海報","日本活潑海報插畫","台灣老街城市插畫","等角城市插畫","3D 渲染","3D 黏土圖示","賽博龐克","水彩畫","油畫","普普藝術"];
+  var KWS=["photorealistic, ultra-detailed photography","minimalist product photography","luxury brand campaign photography","cinematic film still","Japanese anime illustration style","Japanese shoujo manga style","Japanese shounen manga style","black and white shoujo manga","black and white shounen manga","flat vector illustration","Japanese flat poster art style","flat infographic illustration","editorial illustration, magazine style","flat vector logo design","corporate Memphis style","Japanese editorial illustration, flat vector style","naive art style, bold primary colors","Taiwan old street scene","isometric editorial illustration","3D render, glossy materials","3D clay icon style","cyberpunk aesthetic, neon lights","watercolor painting, soft washes","oil painting, thick impasto","pop art style, bold outlines"];
+  function buildKfGrid(block){
+    if(!block||block.id!=='style')return '';
+    var html='<div style="margin-top:12px;">';
+    html+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">';
+    html+='<span class="field-label" style="margin:0;">風格視覺參考</span>';
+    html+='<button type="button" class="btn btn-ghost btn-sm sg-btn" id="sg-btn-kf" onclick="kfToggle()">▼ 展開預覽</button>';
+    html+='</div><div class="sg-wrap" id="sg-grid-kf"><div class="sg-grid">';
+    KWS.forEach(function(kw,i){
+      var active=block.value&&block.value.indexOf(kw)!==-1;
+      html+='<div class="sg-item'+(active?' sg-on':'')+'" data-kw="'+kw+'" onclick="kfPick(this)">';
+      html+='<img src="'+URLS[i]+'" alt="'+LABELS[i]+'" loading="lazy">';
+      html+='<div class="sg-item-label">'+LABELS[i]+'</div></div>';
     });
-    html += '</div><div class="sg-note">點圖套用風格</div></div></div>';
+    html+='</div><div class="sg-note">點圖套用風格</div></div></div>';
     return html;
   }
-
-  window.kfToggle = function(){
-    var g = document.getElementById('sg-grid-kf');
-    var b = document.getElementById('sg-btn-kf');
-    if(!g || !b) return;
-    var open = g.classList.toggle('open');
-    b.classList.toggle('open', open);
-    b.textContent = open ? '▲ 收起' : '▼ 展開預覽';
+  function injectGrid(){
+    if(STATE.activeStep!=='style')return;
+    if(document.getElementById('sg-btn-kf'))return;
+    var block=STATE.blocks.find(function(b){return b.id==='style';});
+    var body=document.querySelector('.step-editor .step-editor-body');
+    if(body&&block)body.insertAdjacentHTML('beforeend',buildKfGrid(block));
+  }
+  window.kfToggle=function(){
+    var g=document.getElementById('sg-grid-kf');
+    var b=document.getElementById('sg-btn-kf');
+    if(!g||!b)return;
+    var open=g.classList.toggle('open');
+    b.classList.toggle('open',open);
+    b.textContent=open?'▲ 收起':'▼ 展開預覽';
   };
-
-  window.kfPick = function(el){
-    var kw = el.dataset.kw;
-    var block = STATE.blocks.find(function(b){ return b.id === 'style'; });
-    if(!block) return;
-    var idx = block.variants.findIndex(function(v){ return v.indexOf(kw) !== -1; });
-    if(idx >= 0) applyBlockVariant('style', idx);
-    document.querySelectorAll('#sg-grid-kf .sg-item').forEach(function(e){ e.classList.remove('sg-on'); });
+  window.kfPick=function(el){
+    var kw=el.dataset.kw;
+    var block=STATE.blocks.find(function(b){return b.id==='style';});
+    if(!block)return;
+    var idx=block.variants.findIndex(function(v){return v.indexOf(kw)!==-1;});
+    if(idx>=0)applyBlockVariant('style',idx);
+    document.querySelectorAll('#sg-grid-kf .sg-item').forEach(function(e){e.classList.remove('sg-on');});
     el.classList.add('sg-on');
   };
-
-  // hook setActiveStep：切到 style 步驟時注入 grid
-  var _origSetStep = window.setActiveStep;
-  window.setActiveStep = function(id){
+  // 多重 hook，確保任何情況都能注入
+  var _origSetStep=window.setActiveStep;
+  window.setActiveStep=function(id){
     _origSetStep(id);
-    if(id === 'style'){
-      setTimeout(function(){
-        if(document.getElementById('sg-btn-kf')) return;
-        var block = STATE.blocks.find(function(b){ return b.id === 'style'; });
-        var body = document.querySelector('.step-editor .step-editor-body');
-        if(body && block) body.insertAdjacentHTML('beforeend', buildGrid(block));
-      }, 50);
-    }
+    if(id==='style')setTimeout(injectGrid,60);
   };
-  // 若頁面載入時已在 style 步驟
-  setTimeout(function(){
-    if(STATE.activeStep === 'style' && !document.getElementById('sg-btn-kf')){
-      var block = STATE.blocks.find(function(b){ return b.id === 'style'; });
-      var body = document.querySelector('.step-editor .step-editor-body');
-      if(body && block) body.insertAdjacentHTML('beforeend', buildGrid(block));
-    }
-  }, 200);
+  var _origRender=window.render;
+  window.render=function(){
+    _origRender();
+    if(STATE.activeStep==='style')setTimeout(injectGrid,60);
+  };
+  setTimeout(injectGrid,300);
 })();
 </script>
 </body>
