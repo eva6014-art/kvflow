@@ -92,7 +92,7 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); font
 .main { display: flex; flex: 1; overflow: hidden; }
 
 /* ═══════════════════════════════════════════════ LEFT PANEL */
-.left-panel { display:none !important; width:0 !important; overflow:hidden !important; /* 
+.left-panel {
   width: var(--w-left); border-right: 1px solid var(--border);
   background: var(--surface); display: flex; flex-direction: column;
   overflow: hidden; flex-shrink: 0;
@@ -1144,6 +1144,11 @@ function renderCanvas() {
     </div>
     ${blocksHtml}
     <div style="height:32px;"></div>`;
+  if (STATE.activeStep === 'style') {
+    var _c = document.getElementById('kf-style-grid-container');
+    var _e = document.querySelector('.step-editor .step-editor-body');
+    if (_c && _e) { _c.classList.add('visible'); _e.appendChild(_c); }
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -1818,38 +1823,22 @@ function kfPick(el) {
   el.classList.add('sg-on');
 }
 
-// setActiveStep：切到 style 步驟時把 container 插進 editor
-// 用 MutationObserver 監聽 DOM 重建後重新插入
-var _sgObserver = null;
-
-function ensureGridInEditor() {
+// 監聽 activeStep 變化，顯示/隱藏 grid container
+var _kfOrigSetStep = setActiveStep;
+function setActiveStep(id) {
+  _kfOrigSetStep(id);
   var container = document.getElementById('kf-style-grid-container');
   if (!container) return;
-  if (STATE.activeStep === 'style') {
+  if (id === 'style') {
+    container.classList.add('visible');
+    // 把 container 移到 step-editor-body 裡
     var editorBody = document.querySelector('.step-editor .step-editor-body');
-    if (editorBody) {
-      if (container.parentNode !== editorBody) {
-        editorBody.appendChild(container);
-      }
-      container.classList.add('visible');
+    if (editorBody && container.parentNode !== editorBody) {
+      editorBody.appendChild(container);
     }
   } else {
     container.classList.remove('visible');
   }
-}
-
-var _kfOrigSetStep = setActiveStep;
-function setActiveStep(id) {
-  _kfOrigSetStep(id);
-  // render() 之後 DOM 已更新，再插入
-  setTimeout(ensureGridInEditor, 0);
-}
-
-// 也在每次 render 後插入（處理 chip 點選等其他觸發）
-var _kfOrigRender = render;
-function render() {
-  _kfOrigRender();
-  setTimeout(ensureGridInEditor, 0);
 }
 
 </script>
