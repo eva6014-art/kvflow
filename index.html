@@ -376,50 +376,20 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); font
 }
 
 
+/* ── Style Grid ── */
+.sg-btn { font-size:11px; padding:4px 10px; border-radius:4px; border:1px solid #d1d5db; background:#f8fafc; color:#64748b; cursor:pointer; transition:all .15s; white-space:nowrap; font-family:inherit; }
+.sg-btn:hover { border-color:#818cf8; color:#4338ca; }
+.sg-btn.open { background:#1e293b; border-color:#1e293b; color:#fff; }
+.sg-wrap { display:none; margin-top:8px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:10px; }
+.sg-wrap.open { display:block; }
+.sg-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(90px,1fr)); gap:6px; }
+.sg-item { cursor:pointer; border-radius:6px; overflow:hidden; border:2px solid transparent; transition:all .15s; }
+.sg-item:hover { border-color:#6366f1; transform:translateY(-1px); box-shadow:0 3px 8px rgba(0,0,0,.12); }
+.sg-item.sg-on { border-color:#1e293b; box-shadow:0 0 0 1px #1e293b; }
+.sg-item img { width:100%; height:64px; object-fit:cover; display:block; }
+.sg-item-label { font-size:9px; font-weight:500; padding:3px 4px; color:#374151; background:#fff; text-align:center; line-height:1.3; }
+.sg-note { font-size:10px; color:#94a3b8; margin-top:6px; text-align:right; }
 
-.sg-toggle {
-  font-size: 11px; padding: 4px 10px; border-radius: 4px;
-  border: 1px solid #d1d5db; background: #f8fafc; color: #64748b;
-  cursor: pointer; transition: all .15s; white-space: nowrap;
-  font-family: inherit; margin-left: 6px;
-}
-.sg-toggle:hover { border-color: #818cf8; color: #4338ca; }
-.sg-toggle.open { background: #1e293b; border-color: #1e293b; color: #fff; }
-.sg-wrap { display: none; margin-top: 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; }
-.sg-wrap.open { display: block; }
-.sg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
-.sg-item { cursor: pointer; border-radius: 6px; overflow: hidden; border: 2px solid transparent; transition: all .15s; background: #e2e8f0; }
-.sg-item:hover { border-color: #6366f1; transform: translateY(-1px); box-shadow: 0 3px 8px rgba(0,0,0,.12); }
-.sg-item.sg-active { border-color: #1e293b; box-shadow: 0 0 0 1px #1e293b; }
-.sg-item img { width: 100%; height: 68px; object-fit: cover; display: block; }
-.sg-item-label { font-size: 9.5px; font-weight: 500; padding: 4px 5px; line-height: 1.3; color: #374151; background: #fff; text-align: center; }
-.sg-note { font-size: 10px; color: #94a3b8; margin-top: 6px; text-align: right; }
-
-/* ── Style Grid v2 ── */
-.sg-toggle {
-  font-size: 11px; padding: 4px 10px; border-radius: 4px;
-  border: 1px solid #d1d5db; background: #f8fafc; color: #64748b;
-  cursor: pointer; transition: all .15s; white-space: nowrap;
-  font-family: inherit; margin-left: 6px;
-}
-.sg-toggle:hover { border-color: #818cf8; color: #4338ca; }
-.sg-toggle.open { background: #1e293b; border-color: #1e293b; color: #fff; }
-.sg-wrap { display: none; margin-top: 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; }
-.sg-wrap.open { display: block; }
-.sg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
-.sg-item { cursor: pointer; border-radius: 6px; overflow: hidden; border: 2px solid transparent; transition: all .15s; background: #e2e8f0; position: relative; }
-.sg-item:hover { border-color: #6366f1; transform: translateY(-1px); box-shadow: 0 3px 8px rgba(0,0,0,.12); }
-.sg-item.sg-active { border-color: #1e293b; box-shadow: 0 0 0 1px #1e293b; }
-.sg-img-wrap { width: 100%; height: 68px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-.sg-thumb { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
-.sg-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; width: 100%; height: 100%; }
-.sg-ph-icon { font-size: 18px; opacity: .4; }
-.sg-ph-text { font-size: 8px; color: #6b7280; text-align: center; padding: 0 4px; line-height: 1.3; opacity: .7; }
-.sg-item-label { font-size: 9.5px; font-weight: 500; padding: 4px 5px 4px 6px; line-height: 1.3; color: #374151; background: #fff; text-align: left; display: flex; align-items: center; justify-content: space-between; }
-.sg-edit-btn { font-size: 11px; color: #94a3b8; background: none; border: none; cursor: pointer; padding: 0 2px; flex-shrink: 0; line-height: 1; }
-.sg-edit-btn:hover { color: #6366f1; }
-.sg-note { font-size: 10px; color: #94a3b8; margin-top: 8px; display: flex; align-items: center; justify-content: space-between; }
-.sg-note-btn { font-size: 10px; color: #6366f1; background: none; border: none; cursor: pointer; text-decoration: underline; }
 /* scrollbar everywhere */
 * { scrollbar-width: thin; scrollbar-color: var(--border2) transparent; }
 
@@ -1794,82 +1764,61 @@ render();
   });
 })();
 </script>
-
 <script>
 (function(){
-  var KF_STYLES = [["photorealistic, ultra-detailed photography", "寫實攝影", "PLACEHOLDER"], ["minimalist product photography", "極簡產品棚拍", "PLACEHOLDER"], ["luxury brand campaign photography", "奢品廣告攝影", "PLACEHOLDER"], ["cinematic film still", "電影質感", "PLACEHOLDER"], ["Japanese anime illustration style", "動漫風格", "PLACEHOLDER"], ["Japanese shoujo manga style", "日本少女漫畫", "PLACEHOLDER"], ["Japanese shounen manga style", "日本少年漫畫", "PLACEHOLDER"], ["black and white shoujo manga", "黑白少女漫畫", "PLACEHOLDER"], ["black and white shounen manga", "黑白少年漫畫", "PLACEHOLDER"], ["flat vector illustration", "扁平化插畫", "PLACEHOLDER"], ["Japanese flat poster art style", "日系扁平海報", "PLACEHOLDER"], ["flat infographic illustration", "扁平資訊圖表", "PLACEHOLDER"], ["editorial illustration, magazine style", "雜誌編輯插畫", "PLACEHOLDER"], ["flat vector logo design", "扁平商標設計", "PLACEHOLDER"], ["corporate Memphis style", "企業孟菲斯風格", "PLACEHOLDER"], ["Japanese editorial illustration, flat vector style", "日本編輯插畫海報", "PLACEHOLDER"], ["naive art style, bold primary colors", "日本活潑海報插畫", "PLACEHOLDER"], ["Taiwan old street scene", "台灣老街城市插畫", "PLACEHOLDER"], ["isometric editorial illustration", "等角城市插畫", "PLACEHOLDER"], ["3D render, glossy materials", "3D 渲染", "PLACEHOLDER"], ["3D clay icon style", "3D 黏土圖示", "PLACEHOLDER"], ["cyberpunk aesthetic, neon lights", "賽博龐克", "PLACEHOLDER"], ["watercolor painting, soft washes", "水彩畫", "PLACEHOLDER"], ["oil painting, thick impasto", "油畫", "PLACEHOLDER"], ["pop art style, bold outlines", "普普藝術", "PLACEHOLDER"]];
+  var URLS = ["https://github.com/user-attachments/assets/a33aca43-f46a-4dc4-8c94-a50a3d33dd3d","https://github.com/user-attachments/assets/e881c5f9-8765-4fac-97fb-19121dd91da1","https://github.com/user-attachments/assets/5bd45758-ea59-4df0-92c8-8041e6621c39","https://github.com/user-attachments/assets/60833c2d-fd83-4efc-9f5f-5856c7ecd091","https://github.com/user-attachments/assets/f0c01c60-0a36-4621-ad13-9c90dec16795","https://github.com/user-attachments/assets/db63f84d-a96b-4faa-b33b-41f26e261b64","https://github.com/user-attachments/assets/185e348c-1233-45ee-8c3b-e3b42c43ed6f","https://github.com/user-attachments/assets/157d9340-c9bd-4e13-9e64-5edda0f2ca57","https://github.com/user-attachments/assets/359d6442-6775-4659-80c0-5cd39f135a17","https://github.com/user-attachments/assets/eab019d8-8a93-4d29-b68b-3082780b209f","https://github.com/user-attachments/assets/d7ccc21a-54a5-4ad8-8aae-094be3052c86","https://github.com/user-attachments/assets/7e8f6d5d-f1b7-4b93-9769-ec83a7368490","https://github.com/user-attachments/assets/b5ab6e4a-8852-463e-a374-e5c644de7d41","https://github.com/user-attachments/assets/8231b861-b2ea-43a1-8786-2baa946ccd91","https://github.com/user-attachments/assets/f86bedcd-a1ca-4cef-b181-d65f8f3571de","https://github.com/user-attachments/assets/7e31cb03-2bae-478d-9ef3-8960f09ff0a7","https://github.com/user-attachments/assets/0d19f87b-0d0f-4249-9e30-464c1be11259","https://github.com/user-attachments/assets/1b561b42-b3e6-44e4-a18f-0c9e7d838e02","https://github.com/user-attachments/assets/6d507f04-d2be-43de-8670-1b26725c4f04","https://github.com/user-attachments/assets/b1979385-4912-4ff2-ba0a-64d4e75a9a66","https://github.com/user-attachments/assets/152048a7-7ed4-48dd-b638-4fa1c11f667d","https://github.com/user-attachments/assets/2967c148-baf7-4da3-81bf-42ecb46a5d6a","https://github.com/user-attachments/assets/e40cbb87-df09-4d75-a4c6-60fdceb22ae5","https://github.com/user-attachments/assets/c0a9d164-0481-4497-b8e7-5360a8f21bf3","https://github.com/user-attachments/assets/146c25f1-e325-4287-8f72-b9d302b9d58c"];
+  var LABELS = ["寫實攝影","極簡產品棚拍","奢品廣告攝影","電影質感","動漫風格","日本少女漫畫","日本少年漫畫","黑白少女漫畫","黑白少年漫畫","扁平化插畫","日系扁平海報","扁平資訊圖表","雜誌編輯插畫","扁平商標設計","企業孟菲斯風格","日本編輯插畫海報","日本活潑海報插畫","台灣老街城市插畫","等角城市插畫","3D 渲染","3D 黏土圖示","賽博龐克","水彩畫","油畫","普普藝術"];
+  var KWS = ["photorealistic, ultra-detailed photography","minimalist product photography","luxury brand campaign photography","cinematic film still","Japanese anime illustration style","Japanese shoujo manga style","Japanese shounen manga style","black and white shoujo manga","black and white shounen manga","flat vector illustration","Japanese flat poster art style","flat infographic illustration","editorial illustration, magazine style","flat vector logo design","corporate Memphis style","Japanese editorial illustration, flat vector style","naive art style, bold primary colors","Taiwan old street scene","isometric editorial illustration","3D render, glossy materials","3D clay icon style","cyberpunk aesthetic, neon lights","watercolor painting, soft washes","oil painting, thick impasto","pop art style, bold outlines"];
 
-  function buildKfGrid(block) {
-    if(!block||block.id!=='style') return '';
-    var html='<div style="margin-top:10px;">';
-    html+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">';
-    html+='<span class="field-label" style="margin:0;">風格視覺參考</span>';
-    html+='<button type="button" class="sg-toggle btn btn-ghost btn-sm" id="sg-kf-toggle" onclick="kfToggleGrid()">▼ 展開預覽</button>';
-    html+='</div>';
-    html+='<div class="sg-wrap" id="sg-kf-grid"><div class="sg-grid">
-<div class="sg-item" data-kw="photorealistic, ultra-detailed photography" onclick="sgPick(this)"><img class="sg-thumb" src="https://github.com/user-attachments/assets/a33aca43-f46a-4dc4-8c94-a50a3d33dd3d" alt="寫實攝影" loading="lazy"><div class="sg-item-label">寫實攝影</div></div>
-<div class="sg-item" data-kw="minimalist product photography" onclick="sgPick(this)"><img class="sg-thumb" src="https://github.com/user-attachments/assets/e881c5f9-8765-4fac-97fb-19121dd91da1" alt="極簡產品棚拍" loading="lazy"><div class="sg-item-label">極簡產品棚拍</div></div>
-<div class="sg-item" data-kw="luxury brand campaign photography" onclick="sgPick(this)"><img class="sg-thumb" src="https://github.com/user-attachments/assets/5bd45758-ea59-4df0-92c8-8041e6621c39" alt="奢品廣告攝影" loading="lazy"><div class="sg-item-label">奢品廣告攝影</div></div>
-<div class="sg-item" data-kw="cinematic film still" onclick="sgPick(this)"><img class="sg-thumb" src="https://github.com/user-attachments/assets/60833c2d-fd83-4efc-9f5f-5856c7ecd091" alt="電影質感" loading="lazy"><div class="sg-item-label">電影質感</div></div>
-<div class="sg-item" data-kw="Japanese anime illustration style" onclick="sgPick(this)"><img class="sg-thumb" src="https://github.com/user-attachments/assets/f0c01c60-0a36-4621-ad13-9c90dec16795" alt="動漫風格" loading="lazy"><div class="sg-item-label">動漫風格</div></div>
-<div class="sg-item" data-kw="Japanese shoujo manga style" onclick="sgPick(this)"><img class="sg-thumb" src="https://github.com/user-attachments/assets/db63f84d-a96b-4faa-b33b-41f26e261b64" alt="日本少女漫畫" loading="lazy"><div class="sg-item-label">日本少女漫畫</div></div>
-<div class="sg-item" data-kw="Japanese shounen manga style" onclick="sgPick(this)"><img class="sg-thumb" src="https://github.com/user-attachments/assets/185e348c-1233-45ee-8c3b-e3b42c43ed6f" alt="日本少年漫畫" loading="lazy"><div class="sg-item-label">日本少年漫畫</div></div>
-<div class="sg-item" data-kw="black and white shoujo manga" onclick="sgPick(this)"><img class="sg-thumb" src="https://github.com/user-attachments/assets/157d9340-c9bd-4e13-9e64-5edda0f2ca57" alt="黑白少女漫畫" loading="lazy"><div class="sg-item-label">黑白少女漫畫</div></div>
-<div class="sg-item" data-kw="black and white shounen manga" onclick="sgPick(this)"><img class="sg-thumb" src="https://github.com/user-attachments/assets/359d6442-6775-4659-80c0-5cd39f135a17" alt="黑白少年漫畫" loading="lazy"><div class="sg-item-label">黑白少年漫畫</div></div>
-<div class="sg-item" data-kw="flat vector illustration" onclick="sgPick(this)"><img class="sg-thumb" src="https://github.com/user-attachments/assets/eab019d8-8a93-4d29-b68b-3082780b209f" alt="扁平化插畫" loading="lazy"><div class="sg-item-label">扁平化插畫</div></div>
-<div class="sg-item" data-kw="Japanese flat poster art style" onclick="sgPick(this)"><img class="sg-thumb" src="https://github.com/user-attachments/assets/d7ccc21a-54a5-4ad8-8aae-094be3052c86" alt="日系扁平海報" loading="lazy"><div class="sg-item-label">日系扁平海報</div></div>
-<div class="sg-item" data-kw="flat infographic illustration" onclick="sgPick(this)"><img class="sg-thumb" src="https://github.com/user-attachments/assets/7e8f6d5d-f1b7-4b93-9769-ec83a7368490" alt="扁平資訊圖表" loading="lazy"><div class="sg-item-label">扁平資訊圖表</div></div>
-<div class="sg-item" data-kw="editorial illustration, magazine style" onclick="sgPick(this)"><img class="sg-thumb" src="https://github.com/user-attachments/assets/b5ab6e4a-8852-463e-a374-e5c644de7d41" alt="雜誌編輯插畫" loading="lazy"><div class="sg-item-label">雜誌編輯插畫</div></div>
-<div class="sg-item" data-kw="flat vector logo design" onclick="sgPick(this)"><img class="sg-thumb" src="https://github.com/user-attachments/assets/8231b861-b2ea-43a1-8786-2baa946ccd91" alt="扁平商標設計" loading="lazy"><div class="sg-item-label">扁平商標設計</div></div>
-<div class="sg-item" data-kw="corporate Memphis style" onclick="sgPick(this)"><img class="sg-thumb" src="https://github.com/user-attachments/assets/f86bedcd-a1ca-4cef-b181-d65f8f3571de" alt="企業孟菲斯風格" loading="lazy"><div class="sg-item-label">企業孟菲斯風格</div></div>
-<div class="sg-item" data-kw="Japanese editorial illustration, flat vector style" onclick="sgPick(this)"><img class="sg-thumb" src="https://github.com/user-attachments/assets/7e31cb03-2bae-478d-9ef3-8960f09ff0a7" alt="日本編輯插畫海報" loading="lazy"><div class="sg-item-label">日本編輯插畫海報</div></div>
-<div class="sg-item" data-kw="naive art style, bold primary colors" onclick="sgPick(this)"><img class="sg-thumb" src="https://github.com/user-attachments/assets/0d19f87b-0d0f-4249-9e30-464c1be11259" alt="日本活潑海報插畫" loading="lazy"><div class="sg-item-label">日本活潑海報插畫</div></div>
-<div class="sg-item" data-kw="Taiwan old street scene" onclick="sgPick(this)"><img class="sg-thumb" src="https://github.com/user-attachments/assets/1b561b42-b3e6-44e4-a18f-0c9e7d838e02" alt="台灣老街城市插畫" loading="lazy"><div class="sg-item-label">台灣老街城市插畫</div></div>
-<div class="sg-item" data-kw="isometric editorial illustration" onclick="sgPick(this)"><img class="sg-thumb" src="https://github.com/user-attachments/assets/6d507f04-d2be-43de-8670-1b26725c4f04" alt="等角城市插畫" loading="lazy"><div class="sg-item-label">等角城市插畫</div></div>
-<div class="sg-item" data-kw="3D render, glossy materials" onclick="sgPick(this)"><img class="sg-thumb" src="https://github.com/user-attachments/assets/b1979385-4912-4ff2-ba0a-64d4e75a9a66" alt="3D 渲染" loading="lazy"><div class="sg-item-label">3D 渲染</div></div>
-<div class="sg-item" data-kw="3D clay icon style" onclick="sgPick(this)"><img class="sg-thumb" src="https://github.com/user-attachments/assets/152048a7-7ed4-48dd-b638-4fa1c11f667d" alt="3D 黏土圖示" loading="lazy"><div class="sg-item-label">3D 黏土圖示</div></div>
-<div class="sg-item" data-kw="cyberpunk aesthetic, neon lights" onclick="sgPick(this)"><img class="sg-thumb" src="https://github.com/user-attachments/assets/2967c148-baf7-4da3-81bf-42ecb46a5d6a" alt="賽博龐克" loading="lazy"><div class="sg-item-label">賽博龐克</div></div>
-<div class="sg-item" data-kw="watercolor painting, soft washes" onclick="sgPick(this)"><img class="sg-thumb" src="https://github.com/user-attachments/assets/e40cbb87-df09-4d75-a4c6-60fdceb22ae5" alt="水彩畫" loading="lazy"><div class="sg-item-label">水彩畫</div></div>
-<div class="sg-item" data-kw="oil painting, thick impasto" onclick="sgPick(this)"><img class="sg-thumb" src="https://github.com/user-attachments/assets/c0a9d164-0481-4497-b8e7-5360a8f21bf3" alt="油畫" loading="lazy"><div class="sg-item-label">油畫</div></div>
-<div class="sg-item" data-kw="pop art style, bold outlines" onclick="sgPick(this)"><img class="sg-thumb" src="https://github.com/user-attachments/assets/146c25f1-e325-4287-8f72-b9d302b9d58c" alt="普普藝術" loading="lazy"><div class="sg-item-label">普普藝術</div></div>
-</div>
-<div class="sg-note">點選圖片套用風格</div></div></div>';
+  function buildGrid(block){
+    if(!block || block.id !== 'style') return '';
+    var html = '<div style="margin-top:12px;">';
+    html += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">';
+    html += '<span class="field-label" style="margin:0;">風格視覺參考</span>';
+    html += '<button type="button" class="btn btn-ghost btn-sm sg-btn" id="sg-btn-kf" onclick="kfToggle()">▼ 展開預覽</button>';
+    html += '</div><div class="sg-wrap" id="sg-grid-kf"><div class="sg-grid">';
+    KWS.forEach(function(kw, i){
+      var active = block.value && block.value.indexOf(kw) !== -1;
+      html += '<div class="sg-item' + (active ? ' sg-on' : '') + '" data-kw="' + kw + '" onclick="kfPick(this)">';
+      html += '<img src="' + URLS[i] + '" alt="' + LABELS[i] + '" loading="lazy">';
+      html += '<div class="sg-item-label">' + LABELS[i] + '</div></div>';
+    });
+    html += '</div><div class="sg-note">點圖套用風格</div></div></div>';
     return html;
   }
 
-  window.kfToggleGrid=function(){
-    var g=document.getElementById('sg-kf-grid');
-    var t=document.getElementById('sg-kf-toggle');
-    if(!g||!t)return;
-    var open=g.classList.toggle('open');
-    t.classList.toggle('open',open);
-    t.textContent=open?'▲ 收起':'▼ 展開預覽';
+  window.kfToggle = function(){
+    var g = document.getElementById('sg-grid-kf');
+    var b = document.getElementById('sg-btn-kf');
+    if(!g || !b) return;
+    var open = g.classList.toggle('open');
+    b.classList.toggle('open', open);
+    b.textContent = open ? '▲ 收起' : '▼ 展開預覽';
   };
 
-  window.kfPickStyle=function(el){
-    var kw=el.dataset.kw;
-    var styleBlock=STATE.blocks.find(function(b){return b.id==='style';});
-    if(!styleBlock)return;
-    var idx=styleBlock.variants.findIndex(function(v){return v.includes(kw);});
-    if(idx>=0) applyBlockVariant('style',idx);
-    document.querySelectorAll('#sg-kf-grid .sg-item').forEach(function(e){e.classList.remove('sg-active');});
-    el.classList.add('sg-active');
+  window.kfPick = function(el){
+    var kw = el.dataset.kw;
+    var block = STATE.blocks.find(function(b){ return b.id === 'style'; });
+    if(!block) return;
+    var idx = block.variants.findIndex(function(v){ return v.indexOf(kw) !== -1; });
+    if(idx >= 0) applyBlockVariant('style', idx);
+    document.querySelectorAll('#sg-grid-kf .sg-item').forEach(function(e){ e.classList.remove('sg-on'); });
+    el.classList.add('sg-on');
   };
 
-  var _origRC=window.renderCanvas;
-  window.renderCanvas=function(){
-    _origRC();
-    if(STATE.activeStep==='style'){
+  var _orig = window.renderCanvas;
+  window.renderCanvas = function(){
+    _orig();
+    if(STATE.activeStep === 'style'){
       setTimeout(function(){
-        if(document.getElementById('sg-kf-toggle')) return;
-        var styleBlock=STATE.blocks.find(function(b){return b.id==='style';});
-        var body=document.querySelector('.step-editor .step-editor-body');
-        if(body&&styleBlock) body.insertAdjacentHTML('beforeend',buildKfGrid(styleBlock));
-      },30);
+        if(document.getElementById('sg-btn-kf')) return;
+        var block = STATE.blocks.find(function(b){ return b.id === 'style'; });
+        var body = document.querySelector('.step-editor .step-editor-body');
+        if(body && block) body.insertAdjacentHTML('beforeend', buildGrid(block));
+      }, 30);
     }
   };
 })();
 </script>
-
 </body>
 </html>
