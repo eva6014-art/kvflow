@@ -1806,18 +1806,27 @@ render();
     el.classList.add('sg-on');
   };
 
-  var _orig = window.renderCanvas;
-  window.renderCanvas = function(){
-    _orig();
-    if(STATE.activeStep === 'style'){
+  // hook setActiveStep：切到 style 步驟時注入 grid
+  var _origSetStep = window.setActiveStep;
+  window.setActiveStep = function(id){
+    _origSetStep(id);
+    if(id === 'style'){
       setTimeout(function(){
         if(document.getElementById('sg-btn-kf')) return;
         var block = STATE.blocks.find(function(b){ return b.id === 'style'; });
         var body = document.querySelector('.step-editor .step-editor-body');
         if(body && block) body.insertAdjacentHTML('beforeend', buildGrid(block));
-      }, 30);
+      }, 50);
     }
   };
+  // 若頁面載入時已在 style 步驟
+  setTimeout(function(){
+    if(STATE.activeStep === 'style' && !document.getElementById('sg-btn-kf')){
+      var block = STATE.blocks.find(function(b){ return b.id === 'style'; });
+      var body = document.querySelector('.step-editor .step-editor-body');
+      if(body && block) body.insertAdjacentHTML('beforeend', buildGrid(block));
+    }
+  }, 200);
 })();
 </script>
 </body>
