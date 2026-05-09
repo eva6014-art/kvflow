@@ -549,9 +549,12 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); font
   .mobile-sheet .score-grid { gap: 8px; }
 }
 .left-panel{display:none!important;}
-.ratio-chip{font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid var(--border2);background:var(--surface2);color:var(--text2);cursor:pointer;white-space:nowrap;transition:all .15s;}
-.ratio-chip.active{background:var(--accent);border-color:var(--accent);color:#fff;}
-.ratio-bar{display:flex;gap:5px;align-items:center;flex-shrink:0;}
+.ratio-chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;}
+.ratio-chip{font-size:11px;padding:4px 11px;border-radius:20px;
+  border:1px solid var(--border2);background:var(--surface2);
+  color:var(--text2);cursor:pointer;white-space:nowrap;transition:all .15s;}
+.ratio-chip:hover{border-color:var(--accent);}
+.ratio-chip.rc-active{background:var(--accent);border-color:var(--accent);color:#fff;}
 </style>
 </head>
 <body>
@@ -562,14 +565,6 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); font
     <div class="topbar-brand">設計工作台</div>
     <div class="topbar-divider"></div>
     <input class="project-name-input" id="project-name" placeholder="未命名專案" value="金融 KV Banner">
-    <div class="topbar-divider"></div>
-    <div class="ratio-bar">
-      <button class="ratio-chip active" data-ar="--ar 16:9" onclick="setRatio(this)">16:9</button>
-      <button class="ratio-chip" data-ar="--ar 16:5" onclick="setRatio(this)">1920×600</button>
-      <button class="ratio-chip" data-ar="--ar 1:1" onclick="setRatio(this)">1:1</button>
-      <button class="ratio-chip" data-ar="--ar 9:16" onclick="setRatio(this)">9:16</button>
-      <button class="ratio-chip" data-ar="--ar 3:2" onclick="setRatio(this)">3:2 KV</button>
-    </div>
     <div class="topbar-divider"></div>
     <div class="topbar-prompt-wrap">
       <span class="topbar-prompt-label">咒語</span>
@@ -1109,6 +1104,16 @@ function renderCanvas() {
                 oninput="updateBlockValue('${block.id}', this.value)"
               >${block.value}</textarea>
             </div>
+            ${block.id === 'subject' ? `<div class="field-group">
+              <label class="field-label">畫面比例</label>
+              <div class="ratio-chips">
+                <button class="ratio-chip ${STATE.arSuffix === '--ar 16:9' ? 'rc-active' : ''}" onclick="setRatio('--ar 16:9', this)">16:9</button>
+                <button class="ratio-chip ${STATE.arSuffix === '--ar 16:5' ? 'rc-active' : ''}" onclick="setRatio('--ar 16:5', this)">1920×600</button>
+                <button class="ratio-chip ${STATE.arSuffix === '--ar 1:1' ? 'rc-active' : ''}" onclick="setRatio('--ar 1:1', this)">1:1</button>
+                <button class="ratio-chip ${STATE.arSuffix === '--ar 9:16' ? 'rc-active' : ''}" onclick="setRatio('--ar 9:16', this)">9:16</button>
+                <button class="ratio-chip ${STATE.arSuffix === '--ar 3:2' ? 'rc-active' : ''}" onclick="setRatio('--ar 3:2', this)">3:2 KV</button>
+              </div>
+            </div>` : ''}
             ${block.id !== 'subject' ? `<div class="field-group">
               <label class="field-label">快速變體 — 點選套用</label>
               <div class="chip-row">
@@ -1848,12 +1853,11 @@ function setActiveStep(id) {
   }
 }
 
-function setRatio(el) {
-  STATE.arSuffix = el.dataset.ar;
-  document.querySelectorAll('.ratio-chip').forEach(function(b) { b.classList.remove('active'); });
-  el.classList.add('active');
+function setRatio(ar, el) {
+  STATE.arSuffix = ar;
   updateTopbar();
   renderRight();
+  renderCanvas();
 }
 
 </script>
