@@ -137,18 +137,16 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); font
 .template-card-desc { font-size: 11px; color: var(--text3); line-height: 1.4; }
 
 /* Usage mode badges */
-.usage-grid { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px; }
+.usage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 8px; }
 .usage-card {
-  border: 1px solid var(--border); border-radius: 20px; padding: 5px 12px;
-  cursor: pointer; transition: all .15s; text-align: center; display: inline-flex;
-  align-items: center; gap: 4px;
+  border: 1px solid var(--border); border-radius: var(--r); padding: 9px 10px;
+  cursor: pointer; transition: all .15s; text-align: center;
 }
 .usage-card:hover { border-color: var(--border2); }
-.usage-card.selected { border-color: var(--accent); background: var(--accent); color: #fff; }
-.usage-card.selected .usage-card-size { color: rgba(255,255,255,0.7); }
-.usage-card-icon { display: none; }
-.usage-card-name { font-size: 12px; font-weight: 500; }
-.usage-card-size { font-family: var(--mono); font-size: 9px; color: var(--text3); }
+.usage-card.selected { border-color: var(--accent); background: var(--accent-soft); }
+.usage-card-icon { font-size: 16px; margin-bottom: 3px; }
+.usage-card-name { font-size: 11px; font-weight: 500; }
+.usage-card-size { font-family: var(--mono); font-size: 9px; color: var(--text3); margin-top: 1px; }
 
 /* ═══════════════════════════════════════════════ CENTER PANEL */
 .center-panel {
@@ -550,7 +548,10 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); font
   /* Score section */
   .mobile-sheet .score-grid { gap: 8px; }
 }
-.left-panel { display: none !important; }
+.left-panel{display:none!important;}
+.ratio-chip{font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid var(--border2);background:var(--surface2);color:var(--text2);cursor:pointer;white-space:nowrap;transition:all .15s;}
+.ratio-chip.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+.ratio-bar{display:flex;gap:5px;align-items:center;flex-shrink:0;}
 </style>
 </head>
 <body>
@@ -561,6 +562,14 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); font
     <div class="topbar-brand">設計工作台</div>
     <div class="topbar-divider"></div>
     <input class="project-name-input" id="project-name" placeholder="未命名專案" value="金融 KV Banner">
+    <div class="topbar-divider"></div>
+    <div class="ratio-bar">
+      <button class="ratio-chip active" data-ar="--ar 16:9" onclick="setRatio(this)">16:9</button>
+      <button class="ratio-chip" data-ar="--ar 16:5" onclick="setRatio(this)">1920×600</button>
+      <button class="ratio-chip" data-ar="--ar 1:1" onclick="setRatio(this)">1:1</button>
+      <button class="ratio-chip" data-ar="--ar 9:16" onclick="setRatio(this)">9:16</button>
+      <button class="ratio-chip" data-ar="--ar 3:2" onclick="setRatio(this)">3:2 KV</button>
+    </div>
     <div class="topbar-divider"></div>
     <div class="topbar-prompt-wrap">
       <span class="topbar-prompt-label">咒語</span>
@@ -705,8 +714,9 @@ const STATE = {
   activeStep: 'subject',
   leftMode: 'steps',   // 'steps' | 'templates'
   rightTab: 'preview',
-  usageMode: 'r169',
+  usageMode: 'banner',
   activeVariantIdx: null,
+  arSuffix: '--ar 16:9',
   snapshots: JSON.parse(localStorage.getItem('wb_snapshots') || '[]'),
   generatedVariants: [],
   _lastTranslation: '',
@@ -874,11 +884,10 @@ const TEMPLATES = [
 ];
 
 const USAGES = [
-  { id: 'r169',  name: '16:9',      size: '1920×1080', icon: '▬', suffix: '--ar 16:9' },
-  { id: 'r165',  name: '1920×600',  size: '1920×600',  icon: '▬', suffix: '--ar 16:5' },
-  { id: 'r11',   name: '1:1',       size: '1080×1080', icon: '◻', suffix: '--ar 1:1' },
-  { id: 'r916',  name: '9:16',      size: '1080×1920', icon: '▮', suffix: '--ar 9:16' },
-  { id: 'r32',   name: '3:2 KV',    size: '1200×800',  icon: '▯', suffix: '--ar 3:2' },
+  { id: 'banner',  name: 'Banner 橫幅',     size: '1920×600', icon: '▬', suffix: '--ar 16:9' },
+  { id: 'social',  name: '社群貼文',size: '1080×1080',icon: '◻', suffix: '--ar 1:1' },
+  { id: 'story',   name: '限時動態',      size: '1080×1920',icon: '▮', suffix: '--ar 9:16' },
+  { id: 'appui',   name: 'App 介面',     size: '375×812',  icon: '▯', suffix: '--ar 9:19.5' },
 ];
 
 
@@ -942,12 +951,12 @@ const STRATEGIC_VARIANTS = [
 // ═══════════════════════════════════════════════════════════════
 function composePrompt(blocks, overrides = {}) {
   const usage = USAGES.find(u => u.id === STATE.usageMode);
-  const suffix = usage ? usage.suffix : '';
   const parts = blocks
     .filter(b => b.enabled)
     .map(b => overrides[b.id] || b.value)
     .filter(Boolean);
   const prompt = parts.join(', ');
+  const suffix = STATE.arSuffix || '';
   return suffix ? prompt + ' ' + suffix : prompt;
 }
 
@@ -1837,6 +1846,14 @@ function setActiveStep(id) {
   } else {
     container.classList.remove('visible');
   }
+}
+
+function setRatio(el) {
+  STATE.arSuffix = el.dataset.ar;
+  document.querySelectorAll('.ratio-chip').forEach(function(b) { b.classList.remove('active'); });
+  el.classList.add('active');
+  updateTopbar();
+  renderRight();
 }
 
 </script>
