@@ -1279,9 +1279,37 @@ function render() {
 // ═══════════════════════════════════════════════════════════════
 // ACTIONS
 // ═══════════════════════════════════════════════════════════════
+function kfToggle() {
+  var g = document.getElementById('sg-grid-kf');
+  var b = document.getElementById('sg-btn-kf');
+  if (!g || !b) return;
+  var open = g.classList.toggle('open');
+  b.classList.toggle('open', open);
+  b.textContent = open ? '▲ 收起' : '▼ 展開預覽';
+}
+function kfPick(el) {
+  var kw = el.dataset.kw;
+  var block = STATE.blocks.find(function(b) { return b.id === 'style'; });
+  if (!block) return;
+  var idx = block.variants.findIndex(function(v) { return v.indexOf(kw) !== -1; });
+  if (idx >= 0) applyBlockVariant('style', idx);
+  document.querySelectorAll('#sg-grid-kf .sg-item').forEach(function(e) { e.classList.remove('sg-on'); });
+  el.classList.add('sg-on');
+}
 function setActiveStep(id) {
   STATE.activeStep = id;
   render();
+  var container = document.getElementById('kf-style-grid-container');
+  if (!container) return;
+  if (id === 'style') {
+    container.classList.add('visible');
+    var editorBody = document.querySelector('.step-editor .step-editor-body');
+    if (editorBody && container.parentNode !== editorBody) {
+      editorBody.appendChild(container);
+    }
+  } else {
+    container.classList.remove('visible');
+  }
 }
 
 function toggleLeftMode() {
@@ -1798,42 +1826,7 @@ render();
     bar.style.display = window.innerWidth <= 768 ? 'flex' : 'none';
   });
 })();
-function kfToggle() {
-  var g = document.getElementById('sg-grid-kf');
-  var b = document.getElementById('sg-btn-kf');
-  if (!g || !b) return;
-  var open = g.classList.toggle('open');
-  b.classList.toggle('open', open);
-  b.textContent = open ? '▲ 收起' : '▼ 展開預覽';
-}
 
-function kfPick(el) {
-  var kw = el.dataset.kw;
-  var block = STATE.blocks.find(function(b) { return b.id === 'style'; });
-  if (!block) return;
-  var idx = block.variants.findIndex(function(v) { return v.indexOf(kw) !== -1; });
-  if (idx >= 0) applyBlockVariant('style', idx);
-  document.querySelectorAll('#sg-grid-kf .sg-item').forEach(function(e) { e.classList.remove('sg-on'); });
-  el.classList.add('sg-on');
-}
-
-// 監聽 activeStep 變化，顯示/隱藏 grid container
-var _kfOrigSetStep = setActiveStep;
-function setActiveStep(id) {
-  _kfOrigSetStep(id);
-  var container = document.getElementById('kf-style-grid-container');
-  if (!container) return;
-  if (id === 'style') {
-    container.classList.add('visible');
-    // 把 container 移到 step-editor-body 裡
-    var editorBody = document.querySelector('.step-editor .step-editor-body');
-    if (editorBody && container.parentNode !== editorBody) {
-      editorBody.appendChild(container);
-    }
-  } else {
-    container.classList.remove('visible');
-  }
-}
 
 </script>
 </body>
